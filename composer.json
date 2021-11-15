@@ -1,0 +1,9 @@
+{
+  "name": "drupal/citation_select",
+  "type": "drupal-module",
+  "description": "",
+  "keywords": ["Drupal"],
+  "require": {
+    "professional-wiki/edtf": "~2.0"
+  }
+}
