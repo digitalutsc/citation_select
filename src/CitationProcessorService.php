@@ -12,11 +12,9 @@ use Drupal\Component\Utility\Xss;
  */
 class CitationProcessorService implements CitationProcessorServiceInterface {
 
-  protected $human_name_parser;
   protected $citation_field_formatter_manager;
 
-  public function __construct($human_name_parser, $citationFieldFormatterManager) {
-    $this->human_name_parser = $human_name_parser;
+  public function __construct($citationFieldFormatterManager) {
     $this->citation_field_formatter_manager = $citationFieldFormatterManager;
   }
 

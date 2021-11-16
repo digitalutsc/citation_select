@@ -4,4 +4,4 @@ services:
     parent: default_plugin_manager
   citation_select.citation_processor:
     class: Drupal\citation_select\CitationProcessorService
-    arguments: ['@bibcite.human_name_parser', '@plugin.manager.citation.field.formatter']
+    arguments: ['@plugin.manager.citation.field.formatter']
