@@ -2,8 +2,11 @@
 
 namespace Drupal\citation_select;
 
-use Drupal\citation_select\CitationFieldFormatterInterface;
+use Drupal\node\Entity\Node;
 
+/**
+ * Base plugin for Citation Field Formatters.
+ */
 class CitationFieldFormatterBase implements CitationFieldFormatterInterface {
 
   /**
@@ -18,19 +21,24 @@ class CitationFieldFormatterBase implements CitationFieldFormatterInterface {
     foreach ($csl_fields as $csl_field => $csl_type) {
       if ($csl_type == 'person') {
         $data[$csl_field] = $this->formatNames($this->getFieldValueList($node, $node_field));
-      } else if ($csl_type == 'date') {
+      }
+      elseif ($csl_type == 'date') {
         $data[$csl_field] = $this->parseDate($this->getField($node, $node_field));
-      } else {
+      }
+      else {
         $data[$csl_field] = $this->getField($node, $node_field);
       }
     }
   }
 
   /**
-   * Converts date string to CSL-JSON array format
+   * Converts date string to CSL-JSON array format.
    *
    * @param string $string
-   * @return array Date formatted as CSL-JSON
+   *   String to format as date.
+   *
+   * @return array
+   *   Date formatted as CSL-JSON
    */
   protected function parseDate($string) {
     $date = date_parse($string);
@@ -39,42 +47,54 @@ class CitationFieldFormatterBase implements CitationFieldFormatterInterface {
         $date['year'],
         $date['month'],
         $date['day'],
-      ]],
+      ],
+      ],
     ];
   }
 
   /**
-   * Gets field value from node
+   * Gets field value from node.
    *
-   * @param $node Drupal node object
-   * @param string $field Field name from node
-   * @return Field value from node
+   * @param \Drupal\node\Entity\Node $node
+   *   Drupal node object.
+   * @param string $field
+   *   Field name from node.
+   *
+   * @return string
+   *   Field value from node
    */
-  protected function getField($node, $field) {
+  protected function getField(Node $node, $field) {
     return $node->get($field)->getValue()[0]['value'];
   }
 
   /**
-   * Gets list of field values from node
+   * Gets list of field values from node.
    *
-   * @param $node Drupal node object
-   * @param string $field Field name from node
-   * @return array List of field values from node
+   * @param \Drupal\node\Entity\Node $node
+   *   Drupal node object.
+   * @param string $field
+   *   Field name from node.
+   *
+   * @return array
+   *   List of field values from node
    */
-  protected function getFieldValueList($node, $field) {
-    $data = array_map(function($n) {
+  protected function getFieldValueList(Node $node, $field) {
+    $data = array_map(function ($n) {
         return $n['value'];
-      }, $node->get($field)->getValue());
+    }, $node->get($field)->getValue());
     return $data;
   }
 
   /**
-   * Gets list of field values from node
+   * Gets list of field values from node.
    *
-   * @param array string[] List of strings to format into CSL-JSON format
-   * @return array List of names formatted as CSL-JSON
+   * @param array $list
+   *   List of strings to format into CSL-JSON format.
+   *
+   * @return array
+   *   List of names formatted as CSL-JSON
    */
-  protected function formatNames($list) {
+  protected function formatNames(array $list) {
     $data = [];
     foreach ($list as $name) {
       $data[] = $this->convertName($name);
@@ -83,10 +103,13 @@ class CitationFieldFormatterBase implements CitationFieldFormatterInterface {
   }
 
   /**
-   * Converts string to CSL-JSON list
+   * Converts string to CSL-JSON list.
    *
-   * @param string String to convert into CSL-JSON list
-   * @return array Name formatted as CSL-JSON
+   * @param string $name
+   *   String to convert into CSL-JSON list.
+   *
+   * @return array
+   *   Name formatted as CSL-JSON
    */
   protected function convertName($name) {
     try {
@@ -98,9 +121,10 @@ class CitationFieldFormatterBase implements CitationFieldFormatterInterface {
         'family' => $name_parts['last_name'],
         'suffix' => $name_parts['suffix'],
       ];
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       $name_map = [
-        'literal' => $name
+        'literal' => $name,
       ];
     }
     return $name_map;

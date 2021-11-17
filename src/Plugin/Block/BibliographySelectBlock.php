@@ -3,8 +3,6 @@
 namespace Drupal\citation_select\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Form\FormBuilder;
-use Drupal\Core\Utility\Token;
 
 /**
  * Provides a block to generate citations from content.

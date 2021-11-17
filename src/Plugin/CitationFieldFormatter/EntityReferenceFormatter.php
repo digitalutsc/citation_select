@@ -5,6 +5,7 @@ namespace Drupal\citation_select\Plugin\CitationFieldFormatter;
 use Drupal\citation_select\CitationFieldFormatterBase;
 
 /**
+ * Plugin to format entity reference field type.
  *
  * @CitationFieldFormatter(
  *    field_type = "entity_reference",
@@ -15,8 +16,7 @@ class EntityReferenceFormatter extends CitationFieldFormatterBase {
   /**
    * {@inheritdoc}
    */
-  protected function getField($node, $field)
-  {
+  protected function getField($node, $field) {
     return $node->get($field)->referencedEntities()[0]->getName();
   }
 
@@ -31,4 +31,5 @@ class EntityReferenceFormatter extends CitationFieldFormatterBase {
     );
     return $data;
   }
+
 }

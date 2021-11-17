@@ -5,7 +5,6 @@ namespace Drupal\citation_select\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drupal\field\FieldStorageConfigInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,18 +15,25 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class CslMapForm extends ConfigFormBase {
 
   /**
+   * Entity field manager service.
+   *
    * @var Drupal\Core\Entity\EntityFieldManager
    */
-  protected $entity_field_manager; 
+  protected $entityFieldManager;
 
-    /**
+  /**
    * The field type plugin manager.
    *
    * @var \Drupal\Core\Field\FieldTypePluginManagerInterface
    */
-  protected $field_type_plugin_manager;
+  protected $fieldTypePluginManager;
 
-  protected $csl_fields = [
+  /**
+   * List of CSL fields.
+   *
+   * @var array
+   */
+  protected $cslFields = [
     "abstract",
     "annote",
     "archive",
@@ -75,13 +81,15 @@ class CslMapForm extends ConfigFormBase {
     "version",
     "year-suffix",
     "language",
-    "accessed", // dates
+  // Dates.
+    "accessed",
     "container",
     "event-date",
     "issued",
     "original-date",
     "submitted",
-    "author", // names
+  // Names.
+    "author",
     "collection-editor",
     "composer",
     "container-author",
@@ -96,11 +104,17 @@ class CslMapForm extends ConfigFormBase {
     "translator",
   ];
 
+  /**
+   * {@inheritdoc}
+   */
   public function __construct(EntityFieldManagerInterface $entity_field_manager, FieldTypePluginManagerInterface $field_type_plugin_manager) {
-    $this->entity_field_manager = $entity_field_manager;
-    $this->field_type_plugin_manager = $field_type_plugin_manager;
+    $this->entityFieldManager = $entity_field_manager;
+    $this->fieldTypePluginManager = $field_type_plugin_manager;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_field.manager'),
@@ -137,11 +151,11 @@ class CslMapForm extends ConfigFormBase {
 
     $fields = $this->getFields();
 
-    foreach ($this->csl_fields as $key) {
+    foreach ($this->cslFields as $key) {
       $form['csl_map_table'][$key]['csl_field'] = [
         '#type' => 'item',
         '#markup' => $key,
-        '#value' => $key
+        '#value' => $key,
       ];
       $form['csl_map_table'][$key]['node_field'] = [
         '#type' => 'select',
@@ -156,13 +170,21 @@ class CslMapForm extends ConfigFormBase {
       '#type' => 'select',
       '#title' => $this->t('Select field referencing reference type taxonomy'),
       '#options' => $this->getFields(),
-      '#default_value' => $this->config('citation_select.settings')->get('reference_type_field'), 
+      '#default_value' => $this->config('citation_select.settings')->get('reference_type_field'),
     ];
 
     return parent::buildForm($form, $form_state);
   }
 
-  protected function setDefaults(&$form, $config_map) {
+  /**
+   * Set defaults based on settings.
+   *
+   * @param array $form
+   *   Form to render.
+   * @param array $config_map
+   *   Config map to get defaults from.
+   */
+  protected function setDefaults(array &$form, array $config_map) {
     foreach ($config_map as $node_field => $csl_fields) {
       foreach ($csl_fields as $csl_field) {
         $form['csl_map_table'][$csl_field]['node_field']['#default_value'] = $node_field;
@@ -171,13 +193,14 @@ class CslMapForm extends ConfigFormBase {
   }
 
   /**
-   * {@inheritdoc}
+   * Gets options map from table.
+   *
+   * @param array $field_list
+   *   List of fields.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    parent::validateForm($form, $form_state);
-  }
-
-  protected function getMapFromTable($field_list, $form_state) {
+  protected function getMapFromTable(array $field_list, FormStateInterface $form_state) {
     $map = [];
     $field_row = $form_state->getValue('csl_map_table');
 
@@ -196,7 +219,7 @@ class CslMapForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $csl_map = $this->getMapFromTable($this->csl_fields, $form_state);
+    $csl_map = $this->getMapFromTable($this->cslFields, $form_state);
 
     $this->config('citation_select.settings')
       ->set('reference_type_field', $form_state->getValue('reference_type_field'))
@@ -209,22 +232,25 @@ class CslMapForm extends ConfigFormBase {
   }
 
   /**
-   * Gets node fields for mapping
-   * 
-   * Adapted from Drupal\field_ui\Form\FieldStorageAddForm
+   * Gets node fields for mapping.
+   *
+   * Adapted from Drupal\field_ui\Form\FieldStorageAddForm.
+   *
+   * @return array
+   *   Map of options.
    */
   protected function getFields() {
     $options = [];
     $options['title'] = $this->t('Custom: Title');
     $options['current url'] = $this->t('Custom: Page URL');
-    
+
     // Load the field_storages and build the list of options.
-    $field_types = $this->field_type_plugin_manager->getDefinitions();
-    foreach ($this->entity_field_manager->getFieldStorageDefinitions('node') as $field_name => $field_storage) {
+    $field_types = $this->fieldTypePluginManager->getDefinitions();
+    foreach ($this->entityFieldManager->getFieldStorageDefinitions('node') as $field_name => $field_storage) {
       // Do not show:
       // - non-configurable field storages,
       // - locked field storages,
-      // - field storages that should not be added via user interface,
+      // - field storages that should not be added via user interface,.
       $field_type = $field_storage->getType();
       if ($field_storage instanceof FieldStorageConfigInterface
         && !$field_storage->isLocked()
@@ -238,18 +264,19 @@ class CslMapForm extends ConfigFormBase {
     asort($options);
 
     return $options;
-  
-/*
-    $entity_types_map = $this->entity_field_manager->getFieldMap();
+
+    /*
+    $entity_types_map = $this->entityFieldManager->getFieldMap();
 
     $data = [];
     foreach ($entity_types_map as $field_array) {
-      foreach ($field_array as $field => $field_data) {
-        $data[$field] = $field;
-      }
+    foreach ($field_array as $field => $field_data) {
+    $data[$field] = $field;
+    }
     }
     return $data;
+    }
+     */
   }
- */
-  }
+
 }

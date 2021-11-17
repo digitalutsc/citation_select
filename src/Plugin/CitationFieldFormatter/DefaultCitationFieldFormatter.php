@@ -5,6 +5,7 @@ namespace Drupal\citation_select\Plugin\CitationFieldFormatter;
 use Drupal\citation_select\CitationFieldFormatterBase;
 
 /**
+ * Default plugin to format field.
  *
  * @CitationFieldFormatter(
  *    id = "default",
@@ -26,28 +27,29 @@ class DefaultCitationFieldFormatter extends CitationFieldFormatterBase {
     foreach ($csl_fields as $csl_field => $csl_type) {
       if ($csl_type == 'person') {
         $data[$csl_field] = $this->formatNames($this->getFieldValueList($node, $node_field));
-      } else if ($csl_type == 'date') {
+      }
+      elseif ($csl_type == 'date') {
         $data[$csl_field] = $this->parseDate($this->getField($node, $node_field));
-      } else {
+      }
+      else {
         $data[$csl_field] = $this->getField($node, $node_field);
       }
-   }
-   return $data;
+    }
+    return $data;
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function getField($node, $field)
-  {
+  protected function getField($node, $field) {
     switch ($field) {
       case 'title':
         return $node->getTitle();
-        break;
+
       case 'current url':
         global $base_url;
         return $base_url . $node->toUrl()->toString();
-        break;
+
       default:
         return parent::getField($node, $field);
     }
@@ -56,18 +58,18 @@ class DefaultCitationFieldFormatter extends CitationFieldFormatterBase {
   /**
    * {@inheritdoc}
    */
-  protected function getFieldValueList($node, $field)
-  {
+  protected function getFieldValueList($node, $field) {
     switch ($field) {
       case 'title':
-        return array($node->getTitle());
-        break;
+        return [$node->getTitle()];
+
       case 'current url':
         global $base_url;
-        return array($base_url . $node->toUrl()->toString());
-        break;
+        return [$base_url . $node->toUrl()->toString()];
+
       default:
         return parent::getFieldValueList($node, $field);
     }
   }
+
 }

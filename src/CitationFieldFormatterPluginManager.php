@@ -2,11 +2,17 @@
 
 namespace Drupal\citation_select;
 
-use Drupal\Core\Plugin\DefaultPluginManager; 
+use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\citation_select\Annotation\CitationFieldFormatter;
 
+/**
+ * Plugin manager for custom Citation Field Formatter plugin type.
+ */
 class CitationFieldFormatterPluginManager extends DefaultPluginManager {
 
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($namespaces, $cache_backend, $module_handler) {
     $subdir = 'Plugin/CitationFieldFormatter';
     $plugin_interface = CitationFieldFormatterInterface::class;

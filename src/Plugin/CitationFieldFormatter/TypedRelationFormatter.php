@@ -5,6 +5,7 @@ namespace Drupal\citation_select\Plugin\CitationFieldFormatter;
 use Drupal\citation_select\CitationFieldFormatterBase;
 
 /**
+ * Plugin to format typed relation field type.
  *
  * @CitationFieldFormatter(
  *    field_type = "typed_relation",
@@ -31,13 +32,16 @@ class TypedRelationFormatter extends CitationFieldFormatterBase {
       if (isset($rel_name) && in_array($rel_name, array_keys($csl_fields))) {
         switch ($csl_fields[$rel_name]) {
           case 'person':
-            if ($node_field == 'field_linked_agent') { // islandora-specifific linked agents
+            // islandora-specifific linked agents.
+            if ($node_field == 'field_linked_agent') {
               $name_type = $entity->bundle();
               $data[$rel_name][] = ($name_type == 'person') ? $this->convertName($value) : $value;
-            } else {
+            }
+            else {
               $data[$rel_name][] = $this->convertName($value);
             }
             break;
+
           default:
             $data[$rel_name] = $value;
             break;
@@ -49,11 +53,14 @@ class TypedRelationFormatter extends CitationFieldFormatterBase {
   }
 
   /**
-   * Gets map of typed relation
-   * 
-   * @param $node_field Node field to retrieve map from
-   * @return Mapping of typed relation name to corresponding CSL-JSON field
-   * 
+   * Gets map of typed relation.
+   *
+   * @param string $node_field
+   *   Node field to retrieve map from.
+   *
+   * @return array
+   *   Mapping of typed relation name to corresponding CSL-JSON field.
+   *
    * @todo make configurable?
    */
   protected function getTypedRelationsMap($node_field) {
