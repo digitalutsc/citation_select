@@ -3,7 +3,16 @@
   "type": "drupal-module",
   "description": "",
   "keywords": ["Drupal"],
+  "repositories": {
+    "drupal": {
+        "type": "composer",
+        "url": "https://packages.drupal.org/8"
+    }
+  },
   "require": {
-    "professional-wiki/edtf": "~2.0"
-  }
+    "professional-wiki/edtf": "~2.0",
+    "drupal/bibcite": "~2.0",
+    "drupal/token": "^1.9"
+  },
+  "minimum-stability": "dev"
 }
