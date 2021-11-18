@@ -4,4 +4,4 @@ services:
     parent: default_plugin_manager
   citation_select.citation_processor:
     class: Drupal\citation_select\CitationProcessorService
-    arguments: ['@plugin.manager.citation.field.formatter']
+    arguments: ['@plugin.manager.citation.field.formatter', '@config.factory', '@date.formatter', '@entity_type.manager']

@@ -17,10 +17,34 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
   protected $citationFieldFormatterManager;
 
   /**
+   * Config factory service.
+   *
+   * @var Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
+   * Date formatter service.
+   *
+   * @var Drupal\Core\Datetime\DateFormatterInterface
+   */
+  protected $dateFormatter;
+
+  /**
+   * Entity type manager service.
+   *
+   * @var Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct($citationFieldFormatterManager) {
+  public function __construct($citationFieldFormatterManager, $configFactory, $dateFormatter, $entityTypeManager) {
     $this->citationFieldFormatterManager = $citationFieldFormatterManager;
+    $this->configFactory = $configFactory;
+    $this->dateFormatter = $dateFormatter;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -30,7 +54,7 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
    *   Mapping of CSL-JSON fields to node fields for citations
    */
   protected function getFieldMap() {
-    $config = \Drupal::config('citation_select.settings');
+    $config = $this->configFactory->get('citation_select.settings');
     return $config->get('csl_map');
   }
 
@@ -40,7 +64,7 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
    * @todo make default configurable
    */
   public function getCitationArray($nid) {
-    $node = Node::load($nid);
+    $node = $this->entityTypeManager->getStorage('node')->load($nid);
 
     $data = ['type' => $this->getCitationType($node)];
 
@@ -153,7 +177,7 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
    *   Type of citation (e.g. book).
    */
   protected function getCitationType(Node $node) {
-    $config = \Drupal::config('citation_select.settings');
+    $config = $this->configFactory->get('citation_select.settings');
     $field = $config->get('reference_type_field');
 
     if ($node->hasField($field)) {
@@ -174,7 +198,7 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
    *   current date converted to CSL-JSON format
    */
   protected function getNow() {
-    $accessed = date_parse(\Drupal::service('date.formatter')->format(time(), 'short'));
+    $accessed = date_parse($this->dateFormatter->format(time(), 'short'));
 
     $data = [
       'date-parts' => [[
