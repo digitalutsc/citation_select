@@ -9,6 +9,7 @@ use Drupal\citation_select\CitationFieldFormatterBase;
  * Plugin to format edtf field type.
  *
  * @CitationFieldFormatter(
+ *    id = "edtf",
  *    field_type = "edtf",
  * )
  */

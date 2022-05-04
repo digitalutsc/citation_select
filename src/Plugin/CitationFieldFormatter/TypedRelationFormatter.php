@@ -8,6 +8,7 @@ use Drupal\citation_select\CitationFieldFormatterBase;
  * Plugin to format typed relation field type.
  *
  * @CitationFieldFormatter(
+ *    id = "typed_relation",
  *    field_type = "typed_relation",
  * )
  */
