@@ -95,10 +95,16 @@ class SelectCitationForm extends FormBase {
     ];
     $form['actions']['submit'] = [
       '#type' => 'button',
-      '#ajax' => [
-        'callback' => '::getBibliography',
-        'wrapper' => 'formatted-bibliography',
-        'method' => 'html',
+      '#value' => $this->t('Copy citation'),
+      '#attributes' => [
+        'onclick' => 'return false;',
+        'class' => ['clipboard-button'],
+        'data-clipboard-target' => '#formatted-bibliography',
+      ],
+      '#attached' => [
+        'library' => [
+          'citation_select/clipboard_attach',
+        ],
       ],
     ];
 
