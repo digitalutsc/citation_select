@@ -77,6 +77,13 @@ class SelectCitationForm extends FormBase {
     $form['citation_style'] = [
       '#type' => 'select',
       '#options' => $csl_options,
+      '#empty_option' => $this->t('- Select citation style -'),
+      '#ajax' => [
+        'callback' => '::getBibliography',
+        'wrapper' => 'formatted-bibliography',
+        'method' => 'html',
+        'event' => 'change',
+      ],
     ];
     $form['nid'] = [
       '#type' => 'hidden',
@@ -116,6 +123,11 @@ class SelectCitationForm extends FormBase {
    */
   public function getBibliography(array $form, FormStateInterface $form_state) {
     $citation_style = $form_state->getValue('citation_style');
+    if ($citation_style == '') {
+      return [
+        '#children' => '',
+      ];
+    }
     $citation_styler = $this->styler;
     $citation_styler->setStyleById($citation_style);
 
