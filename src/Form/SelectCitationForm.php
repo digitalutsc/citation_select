@@ -76,7 +76,6 @@ class SelectCitationForm extends FormBase {
 
     $form['citation_style'] = [
       '#type' => 'select',
-      '#title' => $this->t('Select bibliography format'),
       '#options' => $csl_options,
     ];
     $form['nid'] = [
@@ -89,7 +88,6 @@ class SelectCitationForm extends FormBase {
     ];
     $form['actions']['submit'] = [
       '#type' => 'button',
-      '#value' => $this->t('Submit'),
       '#ajax' => [
         'callback' => '::getBibliography',
         'wrapper' => 'formatted-bibliography',
