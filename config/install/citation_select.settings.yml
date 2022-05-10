@@ -1,5 +1,5 @@
 csl_map:
   title:
     - title
-  URL:
-    - current url
+  'current url':
+    - URL
