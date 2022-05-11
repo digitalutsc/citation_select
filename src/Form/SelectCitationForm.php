@@ -74,7 +74,16 @@ class SelectCitationForm extends FormBase {
       return $cs->label();
     }, $citation_styles);
 
-    $form['citation_style'] = [
+    $form['#attached']['library'][] = 'citation_select/citation_select_form';
+    $form['container-citation'] = [
+      '#type' => 'container',
+      '#attributes' => ['class' => array('citation-container')]
+    ];
+    $form['container-citation']['citation-info'] = [
+      '#type' => 'container',
+      '#attributes' => ['class' => array('left-col')]
+    ];
+    $form['container-citation']['citation-info']['citation_style'] = [
       '#type' => 'select',
       '#options' => $csl_options,
       '#empty_option' => $this->t('- Select citation style -'),
@@ -84,18 +93,26 @@ class SelectCitationForm extends FormBase {
         'method' => 'html',
         'event' => 'change',
       ],
+      '#theme_wrappers' => []
     ];
-    $form['nid'] = [
+    $form['container-citation']['citation-info']['nid'] = [
       '#type' => 'hidden',
       '#value' => $this->getNodeId(),
+      '#theme_wrappers' => []
+    ];
+    $form['container-citation']['citation-info']['formatted-bibliography'] = [
+      '#type' => 'item',
+      '#markup' => '<div id="formatted-bibliography"></div>',
+      '#theme_wrappers' => []
     ];
 
-    $form['actions'] = [
+    $form['container-citation']['actions'] = [
       '#type' => 'actions',
+      '#attributes' => ['class' => array('right-col')]
     ];
-    $form['actions']['submit'] = [
+    $form['container-citation']['actions']['submit'] = [
       '#type' => 'button',
-      '#value' => $this->t('Copy citation'),
+      '#value' => $this->t('Copy Citation'),
       '#attributes' => [
         'onclick' => 'return false;',
         'class' => ['clipboard-button'],
@@ -108,10 +125,7 @@ class SelectCitationForm extends FormBase {
       ],
     ];
 
-    $form['formatted-bibliography'] = [
-      '#type' => 'item',
-      '#markup' => '<div id="formatted-bibliography"></div>',
-    ];
+
 
     return $form;
   }

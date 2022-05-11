@@ -1,0 +1,15 @@
+.citation-container {
+    display: flex;
+}
+
+.left-col {
+    flex: 0 0 75%;
+}
+.left-col select { width: 100% !important; }
+
+#formatted-bibliography {
+    margin-top: 20px;
+}
+.right-col {
+    flex: 1;
+}
