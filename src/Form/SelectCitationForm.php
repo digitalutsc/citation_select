@@ -12,8 +12,7 @@ use Drupal\Component\Utility\Xss;
 /**
  * Provides a Citation Select form.
  */
-class SelectCitationForm extends FormBase
-{
+class SelectCitationForm extends FormBase {
 
 
   /**
@@ -40,8 +39,7 @@ class SelectCitationForm extends FormBase
   /**
    * {@inheritdoc}
    */
-  public function __construct(CitationStylerInterface $styler, Token $token_service, $citation_processor)
-  {
+  public function __construct(CitationStylerInterface $styler, Token $token_service, $citation_processor) {
     $this->styler = $styler;
     $this->tokenService = $token_service;
     $this->citationProcessor = $citation_processor;
@@ -50,8 +48,7 @@ class SelectCitationForm extends FormBase
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container)
-  {
+  public static function create(ContainerInterface $container) {
     return new static(
       $container->get('bibcite.citation_styler'),
       $container->get('token'),
@@ -62,16 +59,14 @@ class SelectCitationForm extends FormBase
   /**
    * {@inheritdoc}
    */
-  public function getFormId()
-  {
+  public function getFormId() {
     return 'citation_select_select_citation';
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state)
-  {
+  public function buildForm(array $form, FormStateInterface $form_state) {
     /** @var \Drupal\bibcite\CitationStylerInterface $styler */
     $citation_styler = $this->styler;
     $citation_styles = $citation_styler->getAvailableStyles();
@@ -83,13 +78,13 @@ class SelectCitationForm extends FormBase
     $form['container-citation'] = [
       '#type' => 'container',
       '#attributes' => [
-        'class' => array('citation-container')
+        'class' => ['citation-container'],
       ],
     ];
     $form['container-citation']['citation-info'] = [
       '#type' => 'container',
       '#attributes' => [
-        'class' => array('left-col')
+        'class' => ['left-col'],
       ],
     ];
     $form['container-citation']['citation-info']['citation_style'] = [
@@ -117,7 +112,9 @@ class SelectCitationForm extends FormBase
 
     $form['container-citation']['actions'] = [
       '#type' => 'actions',
-      '#attributes' => ['class' => array('right-col')]
+      '#attributes' => [
+        'class' => ['right-col'],
+      ],
     ];
     $form['container-citation']['actions']['submit'] = [
       '#type' => 'button',
@@ -133,8 +130,6 @@ class SelectCitationForm extends FormBase
         ],
       ],
     ];
-
-
     return $form;
   }
 
@@ -149,8 +144,7 @@ class SelectCitationForm extends FormBase
    * @return array
    *   Render array.
    */
-  public function getBibliography(array $form, FormStateInterface $form_state)
-  {
+  public function getBibliography(array $form, FormStateInterface $form_state) {
     $citation_style = $form_state->getValue('citation_style');
     if ($citation_style == '') {
       return [
@@ -179,12 +173,12 @@ class SelectCitationForm extends FormBase
    * @param array $data
    *   Array to sanitize.
    */
-  protected function sanitizeArray(array &$data)
-  {
+  protected function sanitizeArray(array &$data) {
     foreach ($data as $delta => $item) {
       if (is_array($item)) {
         $this->sanitizeArray($item);
-      } else {
+      }
+      else {
         $data[$delta] = Xss::filter($item);
       }
     }
@@ -193,8 +187,7 @@ class SelectCitationForm extends FormBase
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state)
-  {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
 
   }
 
@@ -204,8 +197,7 @@ class SelectCitationForm extends FormBase
    * @return string
    *   Node id of current page.
    */
-  public function getNodeId()
-  {
+  public function getNodeId() {
     $nid = $this->tokenService->replace('[current-page:url:unaliased:args:value:1]');
     return $nid;
   }
