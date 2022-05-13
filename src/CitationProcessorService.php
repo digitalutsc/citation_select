@@ -66,7 +66,7 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
   public function getCitationArray($nid) {
     $node = $this->entityTypeManager->getStorage('node')->load($nid);
 
-    $data = ['type' => $this->getCitationType($node)];
+    $data = [];
 
     // Get plugin definitions map.
     $plugin_map = [];
@@ -86,7 +86,6 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
       $field_type = $this->getFieldType($node, $node_field);
       if (isset($plugin_map[$field_type])) {
         $plugin = $this->citationFieldFormatterManager->createInstance($plugin_map[$field_type]);
-        // Default.
       }
       else {
         $plugin = $this->citationFieldFormatterManager->createInstance('default');
@@ -96,6 +95,7 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
         $data = array_merge($data, $formatted);
       }
     }
+    $data['type'] = $this->getValidType($data['type']);
     return $data;
   }
 
@@ -167,31 +167,78 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
     }
   }
 
+  protected function isValidType($type) {
+    $types = [
+      "article",
+      "article-journal",
+      "article-magazine",
+      "article-newspaper",
+      "bill",
+      "book",
+      "broadcast",
+      "chapter",
+      "classic",
+      "collection",
+      "dataset",
+      "document",
+      "entry",
+      "entry-dictionary",
+      "entry-encyclopedia",
+      "event",
+      "figure",
+      "graphic",
+      "hearing",
+      "interview",
+      "legal_case",
+      "legislation",
+      "manuscript",
+      "map",
+      "motion_picture",
+      "musical_score",
+      "pamphlet",
+      "paper-conference",
+      "patent",
+      "performance",
+      "periodical",
+      "personal_communication",
+      "post",
+      "post-weblog",
+      "regulation",
+      "report",
+      "review",
+      "review-book",
+      "software",
+      "song",
+      "speech",
+      "standard",
+      "thesis",
+      "treaty",
+      "webpage",
+    ];
+    return in_array($types);
+  }
+
   /**
-   * Gets citation type from settings.
+   * Returns $type converted to a valid value of type.
    *
-   * @param \Drupal\node\Entity\Node $node
-   *   Node to get citation type of.
+   * @param $type
+   *   Value to convert to a valid type.
    *
    * @return string
    *   Type of citation (e.g. book).
    */
-  protected function getCitationType(Node $node) {
+  protected function getValidType($type) {
     $config = $this->configFactory->get('citation_select.settings');
-    $field = $config->get('reference_type_field');
     $field_map = $config->get('reference_type_field_map');
 
-    if ($node->hasField($field)) {
-      $reference_type = $node->get($field)->referencedEntities()[0];
-      if ($reference_type != NULL) {
-        $reference_type = strtolower($reference_type->getName());
-        // try to do mapping from value
-        if (array_key_exists($reference_type, $field_map)) {
-          return $field_map[$reference_type];
-        } // if there's no map, check if it's valid and return
-        else if ($this->isValidType($reference_type)) {
-          return $reference_type;
-        }
+    if ($type != NULL) {
+      $type = strtolower($type);
+      // try to do mapping from value
+      if (array_key_exists($type, $field_map)) {
+        return $field_map[$type];
+      } // if there's no map, check if it's valid and return
+      else if ($this->isValidType($type)) {
+        return $type;
       }
     }
     // otherwise, set to 'document'

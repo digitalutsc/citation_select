@@ -34,6 +34,7 @@ class CslMapForm extends ConfigFormBase {
    * @var array
    */
   protected $cslFields = [
+    "type",
     "abstract",
     "annote",
     "archive",
@@ -166,13 +167,6 @@ class CslMapForm extends ConfigFormBase {
 
     $this->setDefaults($form, $this->config('citation_select.settings')->get('csl_map'));
 
-    $form['reference_type_field'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Select field referencing reference type taxonomy'),
-      '#options' => $this->getFields(),
-      '#default_value' => $this->config('citation_select.settings')->get('reference_type_field'),
-    ];
-
     $form['reference_type_field_map'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Reference type field map'),
@@ -241,9 +235,6 @@ class CslMapForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $csl_map = $this->getMapFromTable($this->cslFields, $form_state);
 
-    $this->config('citation_select.settings')
-      ->set('reference_type_field', $form_state->getValue('reference_type_field'))
-      ->save();
     $this->config('citation_select.settings')
       ->set('csl_map', $csl_map)
       ->save();

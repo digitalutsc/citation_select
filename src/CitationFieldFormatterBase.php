@@ -30,6 +30,7 @@ class CitationFieldFormatterBase extends PluginBase implements CitationFieldForm
         $data[$csl_field] = $this->getField($node, $node_field);
       }
     }
+    return $data;
   }
 
   /**
