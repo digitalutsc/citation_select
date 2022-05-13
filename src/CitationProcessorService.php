@@ -179,16 +179,23 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
   protected function getCitationType(Node $node) {
     $config = $this->configFactory->get('citation_select.settings');
     $field = $config->get('reference_type_field');
+    $field_map = $config->get('reference_type_field_map');
 
     if ($node->hasField($field)) {
       $reference_type = $node->get($field)->referencedEntities()[0];
-      $type = $reference_type != NULL ? $reference_type->getName() : NULL;
+      if ($reference_type != NULL) {
+        $reference_type = strtolower($reference_type->getName());
+        // try to do mapping from value
+        if (array_key_exists($reference_type, $field_map)) {
+          return $field_map[$reference_type];
+        } // if there's no map, check if it's valid and return
+        else if ($this->isValidType($reference_type)) {
+          return $reference_type;
+        }
+      }
     }
-    else {
-      $type = NULL;
-    }
-
-    return $type;
+    // otherwise, set to 'document'
+    return 'document';
   }
 
   /**

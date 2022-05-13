@@ -172,6 +172,17 @@ class CslMapForm extends ConfigFormBase {
       '#options' => $this->getFields(),
       '#default_value' => $this->config('citation_select.settings')->get('reference_type_field'),
     ];
+
+    $form['reference_type_field_map'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Reference type field map'),
+      '#description' => $this->t('Enter one value per line, in the format key|label.'),
+    ];
+    $reference_type_field_map = $this->config('citation_select.settings')->get('reference_type_field_map');
+    if ($reference_type_field_map != null) {
+      $form['reference_type_field_map']['#default_value'] = $this->encodeTextSettingsField($reference_type_field_map);
+    }
+
     $form['typed_relation_map'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Typed relation map'),
@@ -239,6 +250,9 @@ class CslMapForm extends ConfigFormBase {
     $this->config('citation_select.settings')
       ->set('typed_relation_map', $this->extractPipedValues($form_state->getValue('typed_relation_map')))
       ->save();
+    $this->config('citation_select.settings')
+    ->set('reference_type_field_map', $this->extractPipedValues($form_state->getValue('reference_type_field_map')))
+    ->save();
 
     parent::submitForm($form, $form_state);
   }
