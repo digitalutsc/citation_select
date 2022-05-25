@@ -55,9 +55,6 @@ class BibliographySelectBlock extends BlockBase implements ContainerFactoryPlugi
    * {@inheritdoc}
    */
   public function build() {
-    $build['content'] = [
-      '#markup' => $this->t('Please check citations for accuracy before including them in your work.'),
-    ];
     $build['form'] = $this->formBuilder->getForm('Drupal\citation_select\Form\SelectCitationForm');
     return $build;
   }
