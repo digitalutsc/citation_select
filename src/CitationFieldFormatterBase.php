@@ -3,11 +3,12 @@
 namespace Drupal\citation_select;
 
 use Drupal\node\Entity\Node;
+use Drupal\Component\Plugin\PluginBase;
 
 /**
  * Base plugin for Citation Field Formatters.
  */
-class CitationFieldFormatterBase implements CitationFieldFormatterInterface {
+class CitationFieldFormatterBase extends PluginBase implements CitationFieldFormatterInterface {
 
   /**
    * {@inheritdoc}
@@ -29,6 +30,7 @@ class CitationFieldFormatterBase implements CitationFieldFormatterInterface {
         $data[$csl_field] = $this->getField($node, $node_field);
       }
     }
+    return $data;
   }
 
   /**

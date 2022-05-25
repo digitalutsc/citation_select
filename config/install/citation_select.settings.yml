@@ -1,5 +1,10 @@
 csl_map:
   title:
     - title
-  URL:
-    - current url
+  'current url':
+    - URL
+typed_relation_map:
+  relators:aut: author
+  relators:ctb: contributor
+  relators:edt: editor
+  relators:pbl: publisher

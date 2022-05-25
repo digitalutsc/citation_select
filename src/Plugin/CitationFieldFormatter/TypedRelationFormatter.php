@@ -3,6 +3,9 @@
 namespace Drupal\citation_select\Plugin\CitationFieldFormatter;
 
 use Drupal\citation_select\CitationFieldFormatterBase;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
  * Plugin to format typed relation field type.
@@ -12,7 +15,42 @@ use Drupal\citation_select\CitationFieldFormatterBase;
  *    field_type = "typed_relation",
  * )
  */
-class TypedRelationFormatter extends CitationFieldFormatterBase {
+class TypedRelationFormatter extends CitationFieldFormatterBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * Config factory service.
+   *
+   * @var Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
+   * @param array $configuration
+   * @param string $plugin_id
+   * @param mixed $plugin_definition
+   * @param \Drupal\Core\Session\AccountInterface $account
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $configFactory) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->configFactory = $configFactory;
+  }
+
+  /**
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   * @param array $configuration
+   * @param string $plugin_id
+   * @param mixed $plugin_definition
+   *
+   * @return static
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('config.factory')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -61,16 +99,10 @@ class TypedRelationFormatter extends CitationFieldFormatterBase {
    *
    * @return array
    *   Mapping of typed relation name to corresponding CSL-JSON field.
-   *
-   * @todo make configurable?
    */
   protected function getTypedRelationsMap($node_field) {
-    return [
-      'relators:aut' => 'author',
-      'relators:ctb' => 'contributor',
-      'relators:edt' => 'editor',
-      'relators:pbl' => 'publisher',
-    ];
+    $config = $this->configFactory->get('citation_select.settings');
+    return $config->get('typed_relation_map');
   }
 
 }

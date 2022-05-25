@@ -34,6 +34,7 @@ class CslMapForm extends ConfigFormBase {
    * @var array
    */
   protected $cslFields = [
+    "type",
     "abstract",
     "annote",
     "archive",
@@ -166,12 +167,25 @@ class CslMapForm extends ConfigFormBase {
 
     $this->setDefaults($form, $this->config('citation_select.settings')->get('csl_map'));
 
-    $form['reference_type_field'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Select field referencing reference type taxonomy'),
-      '#options' => $this->getFields(),
-      '#default_value' => $this->config('citation_select.settings')->get('reference_type_field'),
+    $form['reference_type_field_map'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Reference type field map'),
+      '#description' => $this->t('Enter one value per line, in the format key|label.'),
     ];
+    $reference_type_field_map = $this->config('citation_select.settings')->get('reference_type_field_map');
+    if ($reference_type_field_map != null) {
+      $form['reference_type_field_map']['#default_value'] = $this->encodeTextSettingsField($reference_type_field_map);
+    }
+
+    $form['typed_relation_map'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Typed relation map'),
+      '#description' => $this->t('Enter one value per line, in the format key|label.'),
+    ];
+    $typed_relation_map = $this->config('citation_select.settings')->get('typed_relation_map');
+    if ($typed_relation_map != null) {
+      $form['typed_relation_map']['#default_value'] = $this->encodeTextSettingsField($typed_relation_map);
+    }
 
     return parent::buildForm($form, $form_state);
   }
@@ -222,11 +236,14 @@ class CslMapForm extends ConfigFormBase {
     $csl_map = $this->getMapFromTable($this->cslFields, $form_state);
 
     $this->config('citation_select.settings')
-      ->set('reference_type_field', $form_state->getValue('reference_type_field'))
-      ->save();
-    $this->config('citation_select.settings')
       ->set('csl_map', $csl_map)
       ->save();
+    $this->config('citation_select.settings')
+      ->set('typed_relation_map', $this->extractPipedValues($form_state->getValue('typed_relation_map')))
+      ->save();
+    $this->config('citation_select.settings')
+    ->set('reference_type_field_map', $this->extractPipedValues($form_state->getValue('reference_type_field_map')))
+    ->save();
 
     parent::submitForm($form, $form_state);
   }
@@ -277,6 +294,62 @@ class CslMapForm extends ConfigFormBase {
     return $data;
     }
      */
+  }
+
+  /**
+   * Encodes pipe-delimited key/value pairs.
+   * Adapted from islandora/controlled_access_terms
+   *
+   * @param array $settings
+   *   The array of key/value pairs to encode.
+   *
+   * @return string
+   *   The string of encoded key/value pairs.
+   */
+  protected function encodeTextSettingsField(array $settings) {
+    $output = '';
+    foreach ($settings as $key => $value) {
+      $output .= "$key|$value\n";
+    }
+    return $output;
+  }
+
+  /**
+   * Extracts pipe-delimited key/value pairs.
+   * Adapted from islandora/controlled_access_terms
+   *
+   * @param string $string
+   *   The raw string to extract values from.
+   *
+   * @return array|null
+   *   The array of extracted key/value pairs, or NULL if the string is invalid.
+   *
+   * @see \Drupal\options\Plugin\Field\FieldType\ListItemBase::extractAllowedValues()
+   */
+  protected static function extractPipedValues($string) {
+    $values = [];
+
+    $list = explode("\n", $string);
+    $list = array_map('trim', $list);
+    $list = array_filter($list, 'strlen');
+
+    foreach ($list as $position => $text) {
+      // Check for an explicit key.
+      $matches = [];
+      if (preg_match('/(.*)\|(.*)/', $text, $matches)) {
+        // Trim key and value to avoid unwanted spaces issues.
+        $key = trim($matches[1]);
+        $value = trim($matches[2]);
+      }
+      // Otherwise use the value as key and value.
+      else {
+        $key = $value = $text;
+      }
+
+      $values[$key] = $value;
+    }
+
+    return $values;
   }
 
 }
