@@ -117,19 +117,25 @@ class CitationFieldFormatterBase extends PluginBase implements CitationFieldForm
     try {
       $name_parts = \Drupal::service('bibcite.human_name_parser')->parse($name);
 
-      $name_map = [
-        'prefix' => $name_parts['prefix'],
-        'given' => $name_parts['first_name'],
-        'family' => $name_parts['last_name'],
-        'suffix' => $name_parts['suffix'],
-      ];
+      $name_map = [];
+
+      if (isset($name_parts['prefix'])) $name_map['prefix'] = $name_parts['prefix'];
+      if (isset($name_parts['first_name'])) $name_map['given'] = $name_parts['first_name'];
+      if (isset($name_parts['last_name'])) $name_map['family'] = $name_parts['last_name'];
+      if (isset($name_parts['suffix'])) $name_map['suffix'] = $name_parts['suffix'];
+
+      if (count($name_map) == 1) {
+        return [
+          'literal' => $name,
+        ];
+      }
+      return $name_map;
     }
     catch (Exception $e) {
-      $name_map = [
+      return [
         'literal' => $name,
       ];
     }
-    return $name_map;
   }
 
 }
