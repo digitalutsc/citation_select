@@ -16,4 +16,10 @@
 
 .right-col {
   flex: 1;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+.right-col input.form-submit {
+	margin-top: 0 !important;
 }
