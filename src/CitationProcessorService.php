@@ -95,7 +95,8 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
         $data = array_merge($data, $formatted);
       }
     }
-    $data['type'] = $this->getValidType($data['type']);
+    $type = $data['type'] ?? NULL;
+    $data['type'] = $this->getValidType($type);
     return $data;
   }
 
@@ -215,7 +216,7 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
       "treaty",
       "webpage",
     ];
-    return in_array($types);
+    return in_array($type, $types);
   }
 
   /**
@@ -234,7 +235,7 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
     if ($type != NULL) {
       $type = strtolower($type);
       // try to do mapping from value
-      if (array_key_exists($type, $field_map)) {
+      if ($field_map != NULL && array_key_exists($type, $field_map)) {
         return $field_map[$type];
       } // if there's no map, check if it's valid and return
       else if ($this->isValidType($type)) {
