@@ -63,8 +63,11 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
    *
    * @todo make default configurable
    */
-  public function getCitationArray($nid) {
+  public function getCitationArray($nid, $langcode = 'en') {
     $node = $this->entityTypeManager->getStorage('node')->load($nid);
+    if ($node->hasTranslation($langcode)) {
+      $node = $node->getTranslation($langcode);
+    }
 
     $data = [];
 
