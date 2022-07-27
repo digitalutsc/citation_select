@@ -155,7 +155,8 @@ class SelectCitationForm extends FormBase {
     $citation_styler->setStyleById($citation_style);
 
     $nid = $form_state->getValue('nid');
-    $data = $this->citationProcessor->getCitationArray($nid);
+    $langcode = $citation_styler->getLanguageCode();
+    $data = $this->citationProcessor->getCitationArray($nid, $langcode);
     $this->sanitizeArray($data);
 
     $citation = $citation_styler->render($data);
