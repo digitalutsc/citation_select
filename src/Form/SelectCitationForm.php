@@ -97,6 +97,7 @@ class SelectCitationForm extends FormBase {
         'method' => 'html',
         'event' => 'change',
       ],
+      '#attributes' => ['aria-label' => $this->t('Select style of citation')],
       '#theme_wrappers' => [],
     ];
     $form['container-citation']['citation-info']['nid'] = [
