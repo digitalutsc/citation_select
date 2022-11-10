@@ -163,7 +163,7 @@ class SelectCitationForm extends FormBase {
     $citation = $citation_styler->render($data);
 
     $response = [
-      '#children' => $citation,
+      '#children' => $citation . "<br>Review all citations for accuracy.",
     ];
 
     return $response;
