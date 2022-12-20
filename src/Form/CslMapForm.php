@@ -42,8 +42,10 @@ class CslMapForm extends ConfigFormBase {
     "archive-place",
     "authority",
     "call-number",
+    "chapter-number",
     "citation-label",
     "citation-number",
+    "collection-number",
     "collection-title",
     "container-title",
     "container-title-short",
@@ -54,6 +56,7 @@ class CslMapForm extends ConfigFormBase {
     "event-place",
     "first-reference-note-number",
     "genre",
+    "issue",
     "ISBN",
     "ISSN",
     "jurisdiction",
@@ -61,6 +64,9 @@ class CslMapForm extends ConfigFormBase {
     "locator",
     "medium",
     "note",
+    "number",
+    "number-of-pages",
+    "number-of-volumes",
     "original-publisher",
     "original-publisher-place",
     "original-title",
@@ -80,16 +86,17 @@ class CslMapForm extends ConfigFormBase {
     "title-short",
     "URL",
     "version",
+    "volume",
     "year-suffix",
     "language",
-  // Dates.
+    // Dates.
     "accessed",
     "container",
     "event-date",
     "issued",
     "original-date",
     "submitted",
-  // Names.
+    // Names.
     "author",
     "collection-editor",
     "composer",
@@ -242,8 +249,8 @@ class CslMapForm extends ConfigFormBase {
       ->set('typed_relation_map', $this->extractPipedValues($form_state->getValue('typed_relation_map')))
       ->save();
     $this->config('citation_select.settings')
-    ->set('reference_type_field_map', $this->extractPipedValues($form_state->getValue('reference_type_field_map')))
-    ->save();
+      ->set('reference_type_field_map', $this->extractPipedValues($form_state->getValue('reference_type_field_map')))
+      ->save();
 
     parent::submitForm($form, $form_state);
   }
