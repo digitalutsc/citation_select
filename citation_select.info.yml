@@ -3,7 +3,7 @@ type: module
 description: Allows users to generate a citation based on an object.
 package: Custom
 core: 8.x
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^8.8 || ^9 || ^10
 dependencies:
   - bibcite:bibcite
   - drupal:token
