@@ -11,7 +11,7 @@
   },
   "require": {
     "professional-wiki/edtf": "~2.0",
-    "drupal/bibcite": "~2.0",
+    "drupal/bibcite": "^2.0@beta",
     "drupal/token": "^1.9"
   },
   "minimum-stability": "dev"
