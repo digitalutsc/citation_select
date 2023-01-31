@@ -1,5 +1,5 @@
 citation_select.csl_map:
   title: CSL Format Mapping
-  parent: system.admin_config_development
+  parent: bibcite.settings
   route_name: citation_select.csl_map
   weight: 10
