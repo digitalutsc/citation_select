@@ -150,7 +150,7 @@ class CslMapForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form['csl_map_table'] = [
       '#type' => 'table',
-      '#caption' => $this->t('Field Mapping'),
+      '#caption' => $this->t('CSL-Node Field Mapping'),
       '#header' => [
         $this->t('CSL Field'),
         $this->t('Node Field'),
