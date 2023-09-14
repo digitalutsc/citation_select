@@ -2,19 +2,15 @@
 
 namespace Drupal\Tests\citation_select\Kernel;
 
+use Drupal\bibcite\HumanNameParser;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
-use Drupal\field\Entity\FieldConfig;
-use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\Core\DependencyInjection\ContainerBuilder;
-use Drupal\citation_select\CitationProcessorService;
-use Drupal\citation_select\CitationFieldFormatterPluginManager;
-use Drupal\Core\Datetime\DateFormatter;
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\Entity\Vocabulary;
-use Drupal\bibcite\HumanNameParser;
 
 /**
  * Tests citation processor service.
@@ -35,11 +31,11 @@ class CitationProcessorTests extends KernelTestBase {
     'user',
     'system',
     'text',
-    'bibcite'
+    'bibcite',
   ];
 
   protected $citation_processor;
-  
+
   protected $config_factory;
 
   /**
@@ -67,7 +63,7 @@ class CitationProcessorTests extends KernelTestBase {
     ]);
     $node_type->save();
 
-    // unlimited => true
+    // Unlimited => true.
     $field_storage = FieldStorageConfig::create([
       'field_name' => 'text_field',
       'entity_type' => 'node',
@@ -123,10 +119,16 @@ class CitationProcessorTests extends KernelTestBase {
     $human_parser_mock->expects($this->any())
       ->method('parse')
       ->will($this->returnCallback(
-        function($x) {
-          if ($x == 'John') return ['first_name' => 'John'];
-          if ($x == 'John Smith') return ['first_name' => 'John', 'last_name' => 'Smith'];
-          if ($x == 'Jane Smith') return ['first_name' => 'Jane', 'last_name' => 'Smith'];
+        function ($x) {
+          if ($x == 'John') {
+            return ['first_name' => 'John'];
+          }
+          if ($x == 'John Smith') {
+            return ['first_name' => 'John', 'last_name' => 'Smith'];
+          }
+          if ($x == 'Jane Smith') {
+            return ['first_name' => 'Jane', 'last_name' => 'Smith'];
+          }
         }
       ));
 
@@ -138,9 +140,9 @@ class CitationProcessorTests extends KernelTestBase {
    */
   public function testReferenceType() {
     $this->config_factory->getEditable('citation_select.settings')
-    ->set('csl_map', [])
-    ->save();
-    // no type set
+      ->set('csl_map', [])
+      ->save();
+    // No type set.
     $obj = Node::create([
       'type' => 'repository_object',
       'title' => 'Title',
@@ -152,16 +154,16 @@ class CitationProcessorTests extends KernelTestBase {
     $this->assertEquals('document', $citation_array['type']);
 
     $this->config_factory->getEditable('citation_select.settings')
-    ->set(
+      ->set(
       'csl_map',
       [
         'text_field' => [
           'type',
         ],
       ])
-    ->save();
+      ->save();
 
-    // no mapping: valid
+    // No mapping: valid.
     $obj = Node::create([
       'type' => 'repository_object',
       'title' => 'Title',
@@ -172,16 +174,16 @@ class CitationProcessorTests extends KernelTestBase {
     $citation_array = $this->citation_processor->getCitationArray(10);
     $this->assertEquals('book', $citation_array['type']);
 
-    // tests using mapping
+    // Tests using mapping.
     $this->config_factory->getEditable('citation_select.settings')
-    ->set(
+      ->set(
       'reference_type_field_map',
       [
-        'paged content' => 'book'
+        'paged content' => 'book',
       ])
-    ->save();  
+      ->save();
 
-    // type invalid
+    // Type invalid.
     $obj = Node::create([
       'type' => 'repository_object',
       'title' => 'Title',
@@ -192,7 +194,7 @@ class CitationProcessorTests extends KernelTestBase {
     $citation_array = $this->citation_processor->getCitationArray(5);
     $this->assertEquals('document', $citation_array['type']);
 
-    // type valid
+    // Type valid.
     $obj = Node::create([
       'type' => 'repository_object',
       'title' => 'Title',
@@ -203,7 +205,7 @@ class CitationProcessorTests extends KernelTestBase {
     $citation_array = $this->citation_processor->getCitationArray(6);
     $this->assertEquals('book', $citation_array['type']);
 
-    // map type
+    // Map type.
     $obj = Node::create([
       'type' => 'repository_object',
       'title' => 'Title',
@@ -225,7 +227,7 @@ class CitationProcessorTests extends KernelTestBase {
         [
           'title' => [
             'title',
-          ], 
+          ],
           'text_field' => [
             'author',
             'publisher',
@@ -238,7 +240,7 @@ class CitationProcessorTests extends KernelTestBase {
           ],
           'fake_field' => [
             'note',
-          ]
+          ],
         ])
       ->save();
 
