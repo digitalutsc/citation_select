@@ -20,6 +20,12 @@ use Drupal\taxonomy\Entity\Vocabulary;
  * @group citation_select
  */
 class CitationPluginTests extends PluginTestBase {
+
+  /**
+   * Module list.
+   *
+   * @var array<string>
+   */
   protected static $modules = [
     'citation_select',
     'node',
@@ -30,8 +36,19 @@ class CitationPluginTests extends PluginTestBase {
     'field',
   ];
 
-  protected $default_formatter;
-  protected $entity_reference_formatter;
+  /**
+   * Default formatter.
+   *
+   * @var defaultCitationFieldFormatter
+   */
+  protected $defaultFormatter;
+
+  /**
+   * Entity reference formatter.
+   *
+   * @var entityReferenceFormatter
+   */
+  protected $entityReferenceFormatter;
 
   /**
    * {@inheritdoc}
@@ -124,7 +141,7 @@ class CitationPluginTests extends PluginTestBase {
 
     $this->container->set('bibcite.human_name_parser', $human_parser_mock);
 
-    $this->default_formatter = new DefaultCitationFieldFormatter([], 'default', []);
+    $this->defaultFormatter = new DefaultCitationFieldFormatter([], 'default', []);
     $this->entity_formatter = new EntityReferenceFormatter([], 'entity_reference', []);
   }
 
@@ -186,15 +203,15 @@ class CitationPluginTests extends PluginTestBase {
     $node->save();
 
     // Title works.
-    $result = $this->default_formatter->formatMultiple($node, 'title', ['title' => 'standard']);
+    $result = $this->defaultFormatter->formatMultiple($node, 'title', ['title' => 'standard']);
     $this->assertEquals(['title' => 'Title'], $result);
 
     // Standard.
-    $result = $this->default_formatter->formatMultiple($node, 'text_field', ['genre' => 'standard']);
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'standard']);
     $this->assertEquals(['genre' => 'Text'], $result);
 
     // More fields, standard.
-    $result = $this->default_formatter->formatMultiple($node, 'text_field',
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field',
       [
         'genre' => 'standard',
         'publisher' => 'standard',
@@ -216,7 +233,7 @@ class CitationPluginTests extends PluginTestBase {
     $node->save();
 
     // Date.
-    $result = $this->default_formatter->formatMultiple($node, 'text_field', ['genre' => 'date']);
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'date']);
     $this->assertEquals(
       [
         'genre' => [
@@ -240,7 +257,7 @@ class CitationPluginTests extends PluginTestBase {
     $node->save();
 
     // Name.
-    $result = $this->default_formatter->formatMultiple($node, 'text_field', ['genre' => 'person']);
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'person']);
     $this->assertEquals(
       [
         'genre' => [
@@ -253,7 +270,7 @@ class CitationPluginTests extends PluginTestBase {
     );
 
     // Name + other kind of field.
-    $result = $this->default_formatter->formatMultiple($node, 'text_field',
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field',
       [
         'genre' => 'person',
         'publisher' => 'standard',
@@ -278,7 +295,7 @@ class CitationPluginTests extends PluginTestBase {
     ]);
     $node->save();
     // Names.
-    $result = $this->default_formatter->formatMultiple($node, 'text_field', ['genre' => 'person']);
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'person']);
     $this->assertEquals(
       [
         'genre' => [
@@ -295,11 +312,11 @@ class CitationPluginTests extends PluginTestBase {
     );
 
     // Multiple standard.
-    $result = $this->default_formatter->formatMultiple($node, 'text_field', ['genre' => 'standard']);
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'standard']);
     $this->assertEquals(['genre' => 'John'], $result);
 
     // Field DNE.
-    $result = $this->default_formatter->formatMultiple($node, 'abcdef', ['genre' => 'standard']);
+    $result = $this->defaultFormatter->formatMultiple($node, 'abcdef', ['genre' => 'standard']);
     $this->assertEquals([], $result);
   }
 

@@ -34,9 +34,19 @@ class CitationProcessorTests extends KernelTestBase {
     'bibcite',
   ];
 
-  protected $citation_processor;
+  /**
+   * Default formatter.
+   *
+   * @var CitationProcessorService
+   */
+  protected $citationProcessor;
 
-  protected $config_factory;
+  /**
+   * Config factory.
+   *
+   * @var Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
 
   /**
    * {@inheritdoc}
@@ -110,8 +120,8 @@ class CitationProcessorTests extends KernelTestBase {
     ]);
     $field->save();
 
-    $this->config_factory = $this->container->get('config.factory');
-    $this->citation_processor = $this->container->get('citation_select.citation_processor');
+    $this->configFactory = $this->container->get('config.factory');
+    $this->citationProcessor = $this->container->get('citation_select.citationProcessor');
 
     $human_parser_mock = $this->getMockBuilder(HumanNameParser::class)
       ->disableOriginalConstructor()
@@ -139,7 +149,7 @@ class CitationProcessorTests extends KernelTestBase {
    * Test reference type is correct.
    */
   public function testReferenceType() {
-    $this->config_factory->getEditable('citation_select.settings')
+    $this->configFactory->getEditable('citation_select.settings')
       ->set('csl_map', [])
       ->save();
     // No type set.
@@ -150,10 +160,10 @@ class CitationProcessorTests extends KernelTestBase {
       'nid' => 11,
     ]);
     $obj->save();
-    $citation_array = $this->citation_processor->getCitationArray(11);
+    $citation_array = $this->citationProcessor->getCitationArray(11);
     $this->assertEquals('document', $citation_array['type']);
 
-    $this->config_factory->getEditable('citation_select.settings')
+    $this->configFactory->getEditable('citation_select.settings')
       ->set(
       'csl_map',
       [
@@ -171,11 +181,11 @@ class CitationProcessorTests extends KernelTestBase {
       'nid' => 10,
     ]);
     $obj->save();
-    $citation_array = $this->citation_processor->getCitationArray(10);
+    $citation_array = $this->citationProcessor->getCitationArray(10);
     $this->assertEquals('book', $citation_array['type']);
 
     // Tests using mapping.
-    $this->config_factory->getEditable('citation_select.settings')
+    $this->configFactory->getEditable('citation_select.settings')
       ->set(
       'reference_type_field_map',
       [
@@ -191,7 +201,7 @@ class CitationProcessorTests extends KernelTestBase {
       'nid' => 5,
     ]);
     $obj->save();
-    $citation_array = $this->citation_processor->getCitationArray(5);
+    $citation_array = $this->citationProcessor->getCitationArray(5);
     $this->assertEquals('document', $citation_array['type']);
 
     // Type valid.
@@ -202,7 +212,7 @@ class CitationProcessorTests extends KernelTestBase {
       'nid' => 6,
     ]);
     $obj->save();
-    $citation_array = $this->citation_processor->getCitationArray(6);
+    $citation_array = $this->citationProcessor->getCitationArray(6);
     $this->assertEquals('book', $citation_array['type']);
 
     // Map type.
@@ -213,7 +223,7 @@ class CitationProcessorTests extends KernelTestBase {
       'nid' => 7,
     ]);
     $obj->save();
-    $citation_array = $this->citation_processor->getCitationArray(7);
+    $citation_array = $this->citationProcessor->getCitationArray(7);
     $this->assertEquals('book', $citation_array['type']);
   }
 
@@ -221,7 +231,7 @@ class CitationProcessorTests extends KernelTestBase {
    * Test formatting.
    */
   public function testFormatting() {
-    $this->config_factory->getEditable('citation_select.settings')
+    $this->configFactory->getEditable('citation_select.settings')
       ->set(
         'csl_map',
         [
@@ -261,7 +271,7 @@ class CitationProcessorTests extends KernelTestBase {
       'nid' => 12,
     ]);
     $obj->save();
-    $citation_array = $this->citation_processor->getCitationArray(12);
+    $citation_array = $this->citationProcessor->getCitationArray(12);
     $this->assertEquals(
       [
         'author' => [
