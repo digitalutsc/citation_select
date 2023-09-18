@@ -24,7 +24,7 @@ class CitationPluginTests extends PluginTestBase {
   /**
    * Module list.
    *
-   * @var array<string>
+   * @var arraystring
    */
   protected static $modules = [
     'citation_select',
