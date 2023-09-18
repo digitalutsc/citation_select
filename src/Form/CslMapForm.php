@@ -2,10 +2,10 @@
 
 namespace Drupal\citation_select\Form;
 
-use Drupal\Core\Form\ConfigFormBase;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
+use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\field\FieldStorageConfigInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -180,7 +180,7 @@ class CslMapForm extends ConfigFormBase {
       '#description' => $this->t('Enter one value per line, in the format key|label.'),
     ];
     $reference_type_field_map = $this->config('citation_select.settings')->get('reference_type_field_map');
-    if ($reference_type_field_map != null) {
+    if ($reference_type_field_map != NULL) {
       $form['reference_type_field_map']['#default_value'] = $this->encodeTextSettingsField($reference_type_field_map);
     }
 
@@ -190,7 +190,7 @@ class CslMapForm extends ConfigFormBase {
       '#description' => $this->t('Enter one value per line, in the format key|label.'),
     ];
     $typed_relation_map = $this->config('citation_select.settings')->get('typed_relation_map');
-    if ($typed_relation_map != null) {
+    if ($typed_relation_map != NULL) {
       $form['typed_relation_map']['#default_value'] = $this->encodeTextSettingsField($typed_relation_map);
     }
 
@@ -305,7 +305,8 @@ class CslMapForm extends ConfigFormBase {
 
   /**
    * Encodes pipe-delimited key/value pairs.
-   * Adapted from islandora/controlled_access_terms
+   *
+   * Adapted from islandora/controlled_access_terms.
    *
    * @param array $settings
    *   The array of key/value pairs to encode.
@@ -323,7 +324,8 @@ class CslMapForm extends ConfigFormBase {
 
   /**
    * Extracts pipe-delimited key/value pairs.
-   * Adapted from islandora/controlled_access_terms
+   *
+   * Adapted from islandora/controlled_access_terms.
    *
    * @param string $string
    *   The raw string to extract values from.

@@ -2,12 +2,12 @@
 
 namespace Drupal\citation_select\Form;
 
+use Drupal\bibcite\CitationStylerInterface;
+use Drupal\Component\Utility\Xss;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\bibcite\CitationStylerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Utility\Token;
-use Drupal\Component\Utility\Xss;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a Citation Select form.

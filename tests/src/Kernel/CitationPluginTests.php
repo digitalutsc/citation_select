@@ -39,14 +39,14 @@ class CitationPluginTests extends PluginTestBase {
   /**
    * Default formatter.
    *
-   * @var defaultCitationFieldFormatter
+   * @var Drupal\citation_select\Plugin\CitationFieldFormatter\DefaultCitationFieldFormatter
    */
   protected $defaultFormatter;
 
   /**
    * Entity reference formatter.
    *
-   * @var entityReferenceFormatter
+   * @var Drupal\citation_select\Plugin\CitationFieldFormatter\EntityReferenceFormatter
    */
   protected $entityReferenceFormatter;
 
