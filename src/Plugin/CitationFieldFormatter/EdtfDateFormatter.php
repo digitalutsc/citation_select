@@ -24,13 +24,8 @@ class EdtfDateFormatter extends CitationFieldFormatterBase {
 
     // The parser may return either an EDTF Set or an ExtDate object.
     if (method_exists($edtf_value, 'getDates')) {
-      // Parser returned a Set.
-      $edtf_dates = $edtf_value = $edtf_value->getDates();
-      $date_parts = [
-        $edtf_dates[0]->getYear(),
-        $edtf_dates[0]->getMonth(),
-        $edtf_dates[0]->getDay(),
-      ];
+      // Parser returned a Set, return no date.
+      $date_parts = [];
     }
     else {
       // Parser returned an ExtDate object.
