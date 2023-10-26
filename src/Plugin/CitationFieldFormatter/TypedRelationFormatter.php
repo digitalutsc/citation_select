@@ -3,9 +3,9 @@
 namespace Drupal\citation_select\Plugin\CitationFieldFormatter;
 
 use Drupal\citation_select\CitationFieldFormatterBase;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
  * Plugin to format typed relation field type.
@@ -25,10 +25,16 @@ class TypedRelationFormatter extends CitationFieldFormatterBase implements Conta
   protected $configFactory;
 
   /**
+   * Creates configuration factory member.
+   *
    * @param array $configuration
+   *   Configuration settings.
    * @param string $plugin_id
+   *   Plugin id.
    * @param mixed $plugin_definition
-   * @param \Drupal\Core\Session\AccountInterface $account
+   *   Plugin defintion.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   Configuration factory.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $configFactory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
@@ -36,10 +42,16 @@ class TypedRelationFormatter extends CitationFieldFormatterBase implements Conta
   }
 
   /**
+   * Constructor.
+   *
    * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   Container for dependency injection.
    * @param array $configuration
+   *   Configuration settings.
    * @param string $plugin_id
+   *   Plugin id.
    * @param mixed $plugin_definition
+   *   Plugin definition.
    *
    * @return static
    */

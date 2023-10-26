@@ -2,8 +2,8 @@
 
 namespace Drupal\citation_select;
 
-use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\citation_select\Annotation\CitationFieldFormatter;
+use Drupal\Core\Plugin\DefaultPluginManager;
 
 /**
  * Plugin manager for custom Citation Field Formatter plugin type.

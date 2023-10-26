@@ -2,26 +2,30 @@
 
 namespace Drupal\Tests\citation_select\Kernel;
 
-
+use Drupal\bibcite\HumanNameParser;
+use Drupal\citation_select\Plugin\CitationFieldFormatter\DefaultCitationFieldFormatter;
+use Drupal\citation_select\Plugin\CitationFieldFormatter\EntityReferenceFormatter;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\KernelTests\Core\Plugin\PluginTestBase;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
-use Drupal\field\Entity\FieldConfig;
-use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\Core\Datetime\DateFormatter;
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\Entity\Vocabulary;
-use Drupal\citation_select\Plugin\CitationFieldFormatter\DefaultCitationFieldFormatter;
-use Drupal\citation_select\Plugin\CitationFieldFormatter\EntityReferenceFormatter;
-use Drupal\bibcite\HumanNameParser;
 
 /**
-* Tests field plugins.
-*
-* @group citation_select
-*/
+ * Tests field plugins.
+ *
+ * @group citation_select
+ */
 class CitationPluginTests extends PluginTestBase {
+
+  /**
+   * Module list.
+   *
+   * @var arraystring
+   */
   protected static $modules = [
     'citation_select',
     'node',
@@ -31,16 +35,27 @@ class CitationPluginTests extends PluginTestBase {
     'system',
     'field',
   ];
-  
-  protected $default_formatter;
-  protected $entity_reference_formatter;
-  
+
   /**
-  * {@inheritdoc}
-  */
+   * Default formatter.
+   *
+   * @var Drupal\citation_select\Plugin\CitationFieldFormatter\DefaultCitationFieldFormatter
+   */
+  protected $defaultFormatter;
+
+  /**
+   * Entity reference formatter.
+   *
+   * @var Drupal\citation_select\Plugin\CitationFieldFormatter\EntityReferenceFormatter
+   */
+  protected $entityReferenceFormatter;
+
+  /**
+   * {@inheritdoc}
+   */
   protected function setUp(): void {
     parent::setUp();
-    
+
     $this->installEntitySchema('user');
     $this->installEntitySchema('node');
     $this->installEntitySchema('taxonomy_term');
@@ -111,23 +126,28 @@ class CitationPluginTests extends PluginTestBase {
     $human_parser_mock->expects($this->any())
       ->method('parse')
       ->will($this->returnCallback(
-        function($x) {
-          if ($x == 'John') return ['first_name' => 'John'];
-          if ($x == 'John Smith') return ['first_name' => 'John', 'last_name' => 'Smith'];
-          if ($x == 'Jane Smith') return ['first_name' => 'Jane', 'last_name' => 'Smith'];
+        function ($x) {
+          if ($x == 'John') {
+            return ['first_name' => 'John'];
+          }
+          if ($x == 'John Smith') {
+            return ['first_name' => 'John', 'last_name' => 'Smith'];
+          }
+          if ($x == 'Jane Smith') {
+            return ['first_name' => 'Jane', 'last_name' => 'Smith'];
+          }
         }
       ));
 
     $this->container->set('bibcite.human_name_parser', $human_parser_mock);
 
-    $this->default_formatter = new DefaultCitationFieldFormatter([], 'default', []);
+    $this->defaultFormatter = new DefaultCitationFieldFormatter([], 'default', []);
     $this->entity_formatter = new EntityReferenceFormatter([], 'entity_reference', []);
   }
 
-
   /**
-  * Test default entity reference formatter.
-  */
+   * Test default entity reference formatter.
+   */
   public function testEntityReference() {
     $node = Node::create([
       'type' => 'repository_object',
@@ -138,22 +158,21 @@ class CitationPluginTests extends PluginTestBase {
     ]);
     $node->save();
 
-    // one standard
+    // One standard.
     $result = $this->entity_formatter->formatMultiple($node, 'entity_reference_field', ['genre' => 'standard']);
     $this->assertEquals(['genre' => 'John'], $result);
-
 
     $node = Node::create([
       'type' => 'repository_object',
       'title' => 'Title',
       'entity_reference_field' => [
         ['target_id' => 1],
-        ['target_id' => 2]
+        ['target_id' => 2],
       ],
     ]);
     $node->save();
 
-    // multiple names
+    // Multiple names.
     $result = $this->entity_formatter->formatMultiple($node, 'entity_reference_field', ['genre' => 'person']);
 
     $this->assertEquals(
@@ -166,15 +185,15 @@ class CitationPluginTests extends PluginTestBase {
           [
             'literal' => 'John',
           ],
-        ]
-      ], 
+        ],
+      ],
       $result
     );
   }
 
   /**
-  * Test default field formatter.
-  */
+   * Test default field formatter.
+   */
   public function testDefault() {
     $node = Node::create([
       'type' => 'repository_object',
@@ -182,18 +201,17 @@ class CitationPluginTests extends PluginTestBase {
       'text_field' => 'Text',
     ]);
     $node->save();
-    
-    // title works
-    $result = $this->default_formatter->formatMultiple($node, 'title', ['title' => 'standard']);
+
+    // Title works.
+    $result = $this->defaultFormatter->formatMultiple($node, 'title', ['title' => 'standard']);
     $this->assertEquals(['title' => 'Title'], $result);
-    
-    // standard
-    $result = $this->default_formatter->formatMultiple($node, 'text_field', ['genre' => 'standard']);
+
+    // Standard.
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'standard']);
     $this->assertEquals(['genre' => 'Text'], $result);
 
-
-    // more fields, standard
-    $result = $this->default_formatter->formatMultiple($node, 'text_field',
+    // More fields, standard.
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field',
       [
         'genre' => 'standard',
         'publisher' => 'standard',
@@ -203,10 +221,9 @@ class CitationPluginTests extends PluginTestBase {
       [
         'genre' => 'Text',
         'publisher' => 'Text',
-      ], 
+      ],
       $result
     );
-
 
     $node = Node::create([
       'type' => 'repository_object',
@@ -215,21 +232,22 @@ class CitationPluginTests extends PluginTestBase {
     ]);
     $node->save();
 
-    // date
-    $result = $this->default_formatter->formatMultiple($node, 'text_field', ['genre' => 'date']);
+    // Date.
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'date']);
     $this->assertEquals(
-      ['genre' => [
-        'date-parts' => [
+      [
+        'genre' => [
+          'date-parts' => [
           [
             2022,
             01,
             31,
           ],
+          ],
         ],
-      ]],
+      ],
       $result
     );
-
 
     $node = Node::create([
       'type' => 'repository_object',
@@ -238,21 +256,21 @@ class CitationPluginTests extends PluginTestBase {
     ]);
     $node->save();
 
-    // name
-    $result = $this->default_formatter->formatMultiple($node, 'text_field', ['genre' => 'person']);
+    // Name.
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'person']);
     $this->assertEquals(
       [
         'genre' => [
           [
             'literal' => 'John',
-          ]
-        ]
-      ], 
+          ],
+        ],
+      ],
       $result
     );
 
-    // name + other kind of field
-    $result = $this->default_formatter->formatMultiple($node, 'text_field',
+    // Name + other kind of field.
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field',
       [
         'genre' => 'person',
         'publisher' => 'standard',
@@ -263,13 +281,12 @@ class CitationPluginTests extends PluginTestBase {
         'genre' => [
           [
             'literal' => 'John',
-          ]
+          ],
         ],
         'publisher' => 'John',
-      ], 
+      ],
       $result
     );
-
 
     $node = Node::create([
       'type' => 'repository_object',
@@ -277,8 +294,8 @@ class CitationPluginTests extends PluginTestBase {
       'text_field' => ['John', 'John Smith'],
     ]);
     $node->save();
-    // names
-    $result = $this->default_formatter->formatMultiple($node, 'text_field', ['genre' => 'person']);
+    // Names.
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'person']);
     $this->assertEquals(
       [
         'genre' => [
@@ -288,18 +305,18 @@ class CitationPluginTests extends PluginTestBase {
           [
             'given' => 'John',
             'family' => 'Smith',
-          ]
-        ]
-      ], 
+          ],
+        ],
+      ],
       $result
     );
 
-    // multiple standard
-    $result = $this->default_formatter->formatMultiple($node, 'text_field', ['genre' => 'standard']);
+    // Multiple standard.
+    $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'standard']);
     $this->assertEquals(['genre' => 'John'], $result);
 
-    // field DNE
-    $result = $this->default_formatter->formatMultiple($node, 'abcdef', ['genre' => 'standard']);
+    // Field DNE.
+    $result = $this->defaultFormatter->formatMultiple($node, 'abcdef', ['genre' => 'standard']);
     $this->assertEquals([], $result);
   }
 

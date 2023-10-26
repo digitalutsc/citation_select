@@ -171,6 +171,15 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
     }
   }
 
+  /**
+   * Checks $type if it is valid.
+   *
+   * @param string $type
+   *   Value to be checked for validity.
+   *
+   * @return bool
+   *   Validitiy of $type.
+   */
   protected function isValidType($type) {
     $types = [
       "article",
@@ -225,7 +234,7 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
   /**
    * Returns $type converted to a valid value of type.
    *
-   * @param $type
+   * @param mixed $type
    *   Value to convert to a valid type.
    *
    * @return string
@@ -237,15 +246,16 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
 
     if ($type != NULL) {
       $type = strtolower($type);
-      // try to do mapping from value
+      // Try to do mapping from value.
       if ($field_map != NULL && array_key_exists($type, $field_map)) {
         return $field_map[$type];
-      } // if there's no map, check if it's valid and return
-      else if ($this->isValidType($type)) {
+      }
+      // If there's no map, check if it's valid and return.
+      elseif ($this->isValidType($type)) {
         return $type;
       }
     }
-    // otherwise, set to 'document'
+    // otherwise, set to 'document'.
     return 'document';
   }
 

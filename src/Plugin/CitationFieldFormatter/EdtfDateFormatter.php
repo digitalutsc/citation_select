@@ -2,8 +2,8 @@
 
 namespace Drupal\citation_select\Plugin\CitationFieldFormatter;
 
-use EDTF\EdtfFactory;
 use Drupal\citation_select\CitationFieldFormatterBase;
+use EDTF\EdtfFactory;
 
 /**
  * Plugin to format edtf field type.
