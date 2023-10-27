@@ -181,7 +181,9 @@ class SelectCitationForm extends FormBase {
         $this->sanitizeArray($item);
       }
       else {
-        $data[$delta] = Xss::filter($item);
+        if (!is_null($item)) {
+          $data[$delta] = Xss::filter($item);
+        }
       }
     }
   }
