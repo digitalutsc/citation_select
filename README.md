@@ -4,6 +4,8 @@ Adds a block that allows users to select and view citations of a node object fro
 ## Setup and Usage ##
 ### Requirements ###
 - Token module
+- Citeproc-php Library
+- ADCI/Full-Name-Parser Library
 
 ### Installation ###
 Download module using Composer, and enable with Drush.
