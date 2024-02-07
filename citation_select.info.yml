@@ -3,6 +3,6 @@ type: module
 description: Allows users to generate a citation based on a node.
 package: Custom
 core_version_requirement: ^8.8 || ^9 || ^10
+configure: citation_select.settings
 dependencies:
-  - bibcite:bibcite
   - drupal:token

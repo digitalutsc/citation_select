@@ -1,4 +1,4 @@
-citation_select.settings:
+citation_select.csl_map:
   type: config_object
   label: 'Settings for mapping citation select module'
   mapping:
