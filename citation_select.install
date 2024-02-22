@@ -25,37 +25,3 @@ function citation_select_requirements($phase) {
 
   return $requirements;
 }
-
-/**
- * Delete "links" from citation_select.settings configuration.
- */
-function citation_select_update_8001() {
-  $config_factory = \Drupal::configFactory();
-  $config = $config_factory->getEditable('citation_select.settings');
-  $config->clear('links');
-  $config->save(TRUE);
-}
-
-/**
- * Add config_export property to CSL style config entity.
- */
-function citation_select_update_8002() {
-  $definition_update_manager = \Drupal::entityDefinitionUpdateManager();
-
-  // Update CSL style entity.
-  $citation_select_csl_style = $definition_update_manager->getEntityType('citation_select_csl_style');
-  $citation_select_csl_style->set('config_export', [
-    'id',
-    'parent',
-    'label',
-    'csl',
-    'updated',
-    'custom',
-    'url_id',
-    'override',
-    'preview_mode',
-    'citekey_pattern',
-    'fields',
-  ]);
-  $definition_update_manager->updateEntityType($citation_select_csl_style);
-}

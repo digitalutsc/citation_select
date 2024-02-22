@@ -50,6 +50,10 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *     "updated",
  *     "custom",
  *     "url_id",
+ *     "override",
+ *     "preview_mode",
+ *     "citekey_pattern",
+ *     "fields",
  *   }
  * )
  */
