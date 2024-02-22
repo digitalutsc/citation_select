@@ -2,6 +2,13 @@
 
 namespace Drupal\citation_select;
 
+/**
+ * This file is based on the file from the bibcite module.
+ *
+ * Source: https://git.drupalcode.org/project/bibcite/-/blob/8e8c61a568096a1cdc4a1f65b61d25cd8ae7eb08/src/CitationStyler.php
+ * The original code has been modified to fit the needs of this module.
+ */
+
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
