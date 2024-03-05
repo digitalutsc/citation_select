@@ -28,3 +28,9 @@ Download module using Composer, and enable with Drush.
 2. Configure the Citation Select CSL Mapping to map node fields to CSL fields.
 3. Install some CSL styles.
 4. Use the Citation Select block on the node's page to choose a citation style. The formatted citation will appear below the block and can be copied with the "Copy citation" button.
+
+### Note ###
+If using EDTF dates as a field for citation processing beware of the following:
+- Citation Select processor is unable to handle open interval dates (i.e [..2003] or ../2003)
+  - Citation Select will ignore these types of date sets or intervals and cite as if the dates do not exist
+- Citation Select allows for closed date sets and closed interval dates along with single dates (i.e [1999-01..2003-02] or 1999/2003 or 2003-02-01) 
