@@ -94,6 +94,9 @@ class TypedRelationFormatter extends CitationFieldFormatterBase implements Conta
             break;
 
           default:
+            if ($rel_name == "publisher" && isset($data[$rel_name])) {
+              break;
+            }
             $data[$rel_name] = $value;
             break;
         }
