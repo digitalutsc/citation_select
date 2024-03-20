@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\citation_select\Kernel;
 
-use Drupal\bibcite\HumanNameParser;
+use Drupal\citation_select\HumanNameParser;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
@@ -31,7 +31,6 @@ class CitationProcessorTests extends KernelTestBase {
     'user',
     'system',
     'text',
-    'bibcite',
   ];
 
   /**
@@ -142,7 +141,7 @@ class CitationProcessorTests extends KernelTestBase {
         }
       ));
 
-    $this->container->set('bibcite.human_name_parser', $human_parser_mock);
+    $this->container->set('citation_select.human_name_parser', $human_parser_mock);
   }
 
   /**

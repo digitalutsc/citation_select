@@ -115,7 +115,7 @@ class CitationFieldFormatterBase extends PluginBase implements CitationFieldForm
    */
   protected function convertName($name) {
     try {
-      $name_parts = \Drupal::service('bibcite.human_name_parser')->parse($name);
+      $name_parts = \Drupal::service('citation_select.human_name_parser')->parse($name);
 
       $name_map = [];
 

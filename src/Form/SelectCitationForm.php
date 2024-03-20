@@ -2,7 +2,7 @@
 
 namespace Drupal\citation_select\Form;
 
-use Drupal\bibcite\CitationStylerInterface;
+use Drupal\citation_select\CitationStylerInterface;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -18,7 +18,7 @@ class SelectCitationForm extends FormBase {
   /**
    * Citation styler service.
    *
-   * @var \Drupal\bibcite\CitationStyler
+   * @var \Drupal\citation_select\CitationStyler
    */
   protected $styler;
 
@@ -50,7 +50,7 @@ class SelectCitationForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('bibcite.citation_styler'),
+      $container->get('citation_select.citation_styler'),
       $container->get('token'),
       $container->get('citation_select.citation_processor')
     );
@@ -67,7 +67,7 @@ class SelectCitationForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    /** @var \Drupal\bibcite\CitationStylerInterface $styler */
+    /** @var \Drupal\citation_select\CitationStylerInterface $styler */
     $citation_styler = $this->styler;
     $citation_styles = $citation_styler->getAvailableStyles();
     $csl_options = array_map(function ($cs) {
@@ -154,12 +154,10 @@ class SelectCitationForm extends FormBase {
     }
     $citation_styler = $this->styler;
     $citation_styler->setStyleById($citation_style);
-
     $nid = $form_state->getValue('nid');
     $langcode = $citation_styler->getLanguageCode();
     $data = $this->citationProcessor->getCitationArray($nid, $langcode);
     $this->sanitizeArray($data);
-
     $citation = $citation_styler->render($data);
 
     $response = [

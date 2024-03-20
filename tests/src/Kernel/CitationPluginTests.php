@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\citation_select\Kernel;
 
-use Drupal\bibcite\HumanNameParser;
+use Drupal\citation_select\HumanNameParser;
 use Drupal\citation_select\Plugin\CitationFieldFormatter\DefaultCitationFieldFormatter;
 use Drupal\citation_select\Plugin\CitationFieldFormatter\EntityReferenceFormatter;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
@@ -139,7 +139,7 @@ class CitationPluginTests extends PluginTestBase {
         }
       ));
 
-    $this->container->set('bibcite.human_name_parser', $human_parser_mock);
+    $this->container->set('citation_select.human_name_parser', $human_parser_mock);
 
     $this->defaultFormatter = new DefaultCitationFieldFormatter([], 'default', []);
     $this->entity_formatter = new EntityReferenceFormatter([], 'entity_reference', []);

@@ -8,3 +8,4 @@ typed_relation_map:
   relators:ctb: contributor
   relators:edt: editor
   relators:pbl: publisher
+default_style: apa
