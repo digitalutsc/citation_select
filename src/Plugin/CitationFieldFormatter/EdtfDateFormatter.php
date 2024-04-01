@@ -73,11 +73,11 @@ class EdtfDateFormatter extends CitationFieldFormatterBase {
       else {
         // Parser returned an ExtDate object.
         $date_parts = [
-          [
+          array_filter([
             $edtf_value->getYear(),
             $edtf_value->getMonth(),
             $edtf_value->getDay(),
-          ],
+          ]),
         ];
       }
       return [
