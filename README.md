@@ -1,5 +1,5 @@
 # Citation Select #
-Adds a block that allows users to select and view citations of a node object from a list of citation styles. Uses Citation Style Language (CSL) provided by the Bibcite module.
+Citation Select Drupal module adds a block that allows users to select and view citations of a node object from a list of citation styles. Uses Citation Style Language (CSL) provided by the Bibcite module.
 
 ## Setup and Usage ##
 ### Requirements ###
@@ -35,3 +35,4 @@ If using EDTF dates as a field for citation processing beware of the following:
 - Citation Select processor is unable to handle open interval dates (i.e [..2003] or ../2003)
   - Citation Select will ignore these types of date sets or intervals and cite as if the dates do not exist
 - Citation Select allows for closed date sets and closed interval dates along with single dates (i.e [1999-01..2003-02] or 1999/2003 or 2003-02-01) 
+
