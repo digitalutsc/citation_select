@@ -94,6 +94,19 @@ class CitationStyler implements CitationStylerInterface {
   /**
    * {@inheritdoc}
    */
+  public function getEnabledStyles() {
+    $available_styles = $this->getAvailableStyles();
+    foreach ($available_styles as $key => $style) {
+      if (!$style->status()) {
+        unset($available_styles[$key]);
+      }
+    }
+    return $available_styles;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getStyle() {
     if (!$this->style) {
       $this->setStyleById($this->configuration->get('default_style'));
