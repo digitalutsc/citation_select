@@ -6,6 +6,7 @@ use Drupal\citation_select\CitationStylerInterface;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Utility\Token;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -37,12 +38,20 @@ class SelectCitationForm extends FormBase {
   protected $citationProcessor;
 
   /**
+   * The renderer service.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected $renderer;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct(CitationStylerInterface $styler, Token $token_service, $citation_processor) {
+  public function __construct(CitationStylerInterface $styler, Token $token_service, $citation_processor, RendererInterface $renderer) {
     $this->styler = $styler;
     $this->tokenService = $token_service;
     $this->citationProcessor = $citation_processor;
+    $this->renderer = $renderer;
   }
 
   /**
@@ -52,7 +61,8 @@ class SelectCitationForm extends FormBase {
     return new static(
       $container->get('citation_select.citation_styler'),
       $container->get('token'),
-      $container->get('citation_select.citation_processor')
+      $container->get('citation_select.citation_processor'),
+      $container->get('renderer')
     );
   }
 
@@ -68,6 +78,8 @@ class SelectCitationForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     /** @var \Drupal\citation_select\CitationStylerInterface $styler */
+    $config = $this->config('citation_select.settings');
+    $default_style = $config->get('show_on_load') ? $config->get('default_style') : "";
     $citation_styler = $this->styler;
     $citation_styles = $citation_styler->getAvailableStyles();
     $csl_options = array_map(function ($cs) {
@@ -90,6 +102,7 @@ class SelectCitationForm extends FormBase {
     $form['container-citation']['citation-info']['citation_style'] = [
       '#type' => 'select',
       '#options' => $csl_options,
+      '#default_value' => $default_style,
       '#empty_option' => $this->t('- Select citation style -'),
       '#ajax' => [
         'callback' => '::getBibliography',
@@ -105,9 +118,10 @@ class SelectCitationForm extends FormBase {
       '#value' => $this->getNodeId(),
       '#theme_wrappers' => [],
     ];
+    $bibliography = $config->get('show_on_load') ? $this->renderer->render($this->getBibliography($form, $form_state)) : '';
     $form['container-citation']['citation-info']['formatted-bibliography'] = [
       '#type' => 'item',
-      '#markup' => '<div id="formatted-bibliography"></div>',
+      '#markup' => "<div id='formatted-bibliography'>$bibliography</div>",
       '#theme_wrappers' => [],
     ];
 
@@ -146,15 +160,15 @@ class SelectCitationForm extends FormBase {
    *   Render array.
    */
   public function getBibliography(array $form, FormStateInterface $form_state) {
+    // Default values for initial page load.
     $citation_style = $form_state->getValue('citation_style');
+    $nid = $form_state->getValue('nid');
     if ($citation_style == '') {
-      return [
-        '#children' => '',
-      ];
+      $citation_style = $this->config('citation_select.settings')->get('default_style');
+      $nid = $this->getNodeId();
     }
     $citation_styler = $this->styler;
     $citation_styler->setStyleById($citation_style);
-    $nid = $form_state->getValue('nid');
     $langcode = $citation_styler->getLanguageCode();
     $data = $this->citationProcessor->getCitationArray($nid, $langcode);
     $this->sanitizeArray($data);

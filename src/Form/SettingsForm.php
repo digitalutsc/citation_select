@@ -80,6 +80,12 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('default_style'),
     ];
 
+    $form['show_on_load'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Show Citation by default?'),
+      '#default_value' => $config->get('show_on_load'),
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -90,6 +96,7 @@ class SettingsForm extends ConfigFormBase {
     $config = $this->config('citation_select.settings');
     $config
       ->set('default_style', $form_state->getValue('default_style'))
+      ->set('show_on_load', $form_state->getValue('show_on_load'))
       ->save();
 
     parent::submitForm($form, $form_state);
