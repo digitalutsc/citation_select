@@ -139,7 +139,7 @@ class CitationFieldFormatterBase extends PluginBase implements CitationFieldForm
       }
       return $name_map;
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       return [
         'literal' => $name,
       ];
