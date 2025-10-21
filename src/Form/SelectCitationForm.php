@@ -69,7 +69,7 @@ class SelectCitationForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     /** @var \Drupal\citation_select\CitationStylerInterface $styler */
     $citation_styler = $this->styler;
-    $citation_styles = $citation_styler->getAvailableStyles();
+    $citation_styles = $citation_styler->getEnabledStyles();
     $csl_options = array_map(function ($cs) {
       return $cs->label();
     }, $citation_styles);
