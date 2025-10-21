@@ -70,6 +70,18 @@ class EdtfDateFormatter extends CitationFieldFormatterBase {
           $date_parts = [];
         }
       }
+      elseif (method_exists($edtf_value, 'getStartMonth') && method_exists($edtf_value, 'getEndMonth')) {
+        $date_parts = [
+          array_filter([
+            $edtf_value->getYear(),
+            $edtf_value->getStartMonth(),
+          ]),
+          array_filter([
+            $edtf_value->getYear(),
+            $edtf_value->getEndMonth(),
+          ])
+        ];
+      }
       else {
         // Parser returned an ExtDate object.
         $date_parts = [
