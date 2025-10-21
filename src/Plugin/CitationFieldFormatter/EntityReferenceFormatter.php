@@ -18,7 +18,7 @@ class EntityReferenceFormatter extends CitationFieldFormatterBase {
    * {@inheritdoc}
    */
   protected function getField($node, $field) {
-    return $node->get($field)->referencedEntities()[0]->getName();
+    return $node->get($field)->referencedEntities()[0]->label();
   }
 
   /**
