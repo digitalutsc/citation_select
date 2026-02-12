@@ -83,7 +83,7 @@ class SelectCitationForm extends FormBase {
     $citation_styler = $this->styler;
     $citation_styles = $citation_styler->getEnabledStyles();
     $csl_options = array_map(function ($cs) {
-      return $cs->label();
+      return $this->t($cs->label());
     }, $citation_styles);
 
     $form['#attached']['library'][] = 'citation_select/citation_select_form';
