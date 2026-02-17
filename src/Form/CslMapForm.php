@@ -17,7 +17,7 @@ class CslMapForm extends ConfigFormBase {
   /**
    * Entity field manager service.
    *
-   * @var Drupal\Core\Entity\EntityFieldManager
+   * @var \Drupal\Core\Entity\EntityFieldManager
    */
   protected $entityFieldManager;
 

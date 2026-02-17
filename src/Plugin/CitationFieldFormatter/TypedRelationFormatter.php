@@ -20,7 +20,7 @@ class TypedRelationFormatter extends CitationFieldFormatterBase implements Conta
   /**
    * Config factory service.
    *
-   * @var Drupal\Core\Config\ConfigFactoryInterface
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
 
@@ -75,12 +75,12 @@ class TypedRelationFormatter extends CitationFieldFormatterBase implements Conta
       $current = $iterator->current();
 
       $rel_type = $current->get('rel_type')->getString();
-      $rel_name = $this->getTypedRelationsMap($node_field)[$rel_type];
+      $rel_name = $this->getTypedRelationsMap($node_field)[$rel_type] ?? NULL;
 
       $entity = $current->get('entity')->getTarget()->getValue();
       $value = $entity->getName();
 
-      if (isset($rel_name) && in_array($rel_name, array_keys($csl_fields))) {
+      if (!empty($rel_name) && in_array($rel_name, array_keys($csl_fields))) {
         switch ($csl_fields[$rel_name]) {
           case 'person':
             // islandora-specifific linked agents.
