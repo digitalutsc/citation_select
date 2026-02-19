@@ -120,9 +120,7 @@ class CitationPluginTests extends PluginTestBase {
 
     $this->citation_processor = $this->container->get('citation_select.citation_processor');
 
-    $human_parser_mock = $this->getMockBuilder(HumanNameParser::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $human_parser_mock = $this->createMock(HumanNameParser::class);
     $human_parser_mock->expects($this->any())
       ->method('parse')
       ->will($this->returnCallback(
