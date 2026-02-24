@@ -7,3 +7,7 @@ csl: "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n  <style xmlns=\"http://purl.o
 updated: 1588472596
 custom: true
 url_id: 'http://www.zotero.org/styles/american-medical-association'
+override: false
+preview_mode: 'standard'
+citekey_pattern: '[auth][year]'
+fields: { }
