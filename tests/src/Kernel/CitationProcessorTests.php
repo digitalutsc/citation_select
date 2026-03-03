@@ -120,7 +120,7 @@ class CitationProcessorTests extends KernelTestBase {
     $field->save();
 
     $this->configFactory = $this->container->get('config.factory');
-    $this->citationProcessor = $this->container->get('citation_select.citationProcessor');
+    $this->citationProcessor = $this->container->get('citation_select.citation_processor');
 
     $human_parser_mock = $this->getMockBuilder(HumanNameParser::class)
       ->disableOriginalConstructor()

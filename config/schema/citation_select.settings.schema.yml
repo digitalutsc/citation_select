@@ -4,3 +4,12 @@ citation_select.settings:
   mapping:
     default_style:
       type: string
+    reference_type_field_map:
+      type: ignore
+      label: 'Reference Type Field Map'
+    csl_map:
+      type: ignore
+      label: 'CSL Map'
+    typed_relation_map:
+      type: ignore
+      label: 'Typed Relation Map'

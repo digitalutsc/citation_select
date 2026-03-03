@@ -28,3 +28,15 @@ citation_select.citation_select_csl_style.*:
       label: 'URL ID'
     uuid:
       type: string
+    override:
+      type: boolean
+      label: 'Override'
+    preview_mode:
+      type: string
+      label: 'Preview mode'
+    citekey_pattern:
+      type: string
+      label: 'Citekey pattern'
+    fields:
+      type: ignore
+      label: 'Fields'
