@@ -51,6 +51,13 @@ class CitationPluginTests extends PluginTestBase {
   protected $entityReferenceFormatter;
 
   /**
+   * The citation processor.
+   * 
+   * @var \Drupal\citation_select\CitationProcessorService
+   */
+  protected $citation_processor;
+
+  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
@@ -140,7 +147,7 @@ class CitationPluginTests extends PluginTestBase {
     $this->container->set('citation_select.human_name_parser', $human_parser_mock);
 
     $this->defaultFormatter = new DefaultCitationFieldFormatter([], 'default', []);
-    $this->entity_formatter = new EntityReferenceFormatter([], 'entity_reference', []);
+    $this->entityReferenceFormatter = new EntityReferenceFormatter([], 'entity_reference', []);
   }
 
   /**
@@ -157,7 +164,7 @@ class CitationPluginTests extends PluginTestBase {
     $node->save();
 
     // One standard.
-    $result = $this->entity_formatter->formatMultiple($node, 'entity_reference_field', ['genre' => 'standard']);
+    $result = $this->entityReferenceFormatter->formatMultiple($node, 'entity_reference_field', ['genre' => 'standard']);
     $this->assertEquals(['genre' => 'John'], $result);
 
     $node = Node::create([
@@ -171,7 +178,7 @@ class CitationPluginTests extends PluginTestBase {
     $node->save();
 
     // Multiple names.
-    $result = $this->entity_formatter->formatMultiple($node, 'entity_reference_field', ['genre' => 'person']);
+    $result = $this->entityReferenceFormatter->formatMultiple($node, 'entity_reference_field', ['genre' => 'person']);
 
     $this->assertEquals(
       [
