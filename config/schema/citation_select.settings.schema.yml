@@ -4,6 +4,9 @@ citation_select.settings:
   mapping:
     default_style:
       type: string
+    show_on_load:
+      type: boolean
+      label: 'Show Citation by default'
     reference_type_field_map:
       type: ignore
       label: 'Reference Type Field Map'
