@@ -19,7 +19,7 @@ use Drupal\taxonomy\Entity\Vocabulary;
  *
  * @group citation_select
  */
-class CitationPluginTests extends PluginTestBase {
+class CitationPluginTest extends PluginTestBase {
 
   /**
    * Module list.

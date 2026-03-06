@@ -17,7 +17,7 @@ use Drupal\taxonomy\Entity\Vocabulary;
  *
  * @group citation_select
  */
-class CitationProcessorTests extends KernelTestBase {
+class CitationProcessorTest extends KernelTestBase {
 
   /**
    * {@inheritdoc}
