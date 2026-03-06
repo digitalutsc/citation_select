@@ -43,7 +43,7 @@ class CitationProcessorTests extends KernelTestBase {
   /**
    * Config factory.
    *
-   * @var Drupal\Core\Config\ConfigFactoryInterface
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
 
