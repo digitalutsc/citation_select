@@ -57,15 +57,8 @@ class CitationConfigTests extends BrowserTestBase {
         ]);
         $node->save();
 
-        // hardcode styles as mapping to test all citation styles
-        // next steps: dynamically get this styles 
-        $styles = [
-            'american_medical_association' => 'American Medical Association 10th edition',
-            'apa' => 'American Psychological Association 6th edition',
-            'chicago_author_date' => 'Chicago Manual of Style 16th edition (author-date)',
-            'modern_language_association' => 'Modern Language Association 7th edition',
-            'modern_language_association_8th_edition' => 'Modern Language Association 8th edition',
-        ];
+        // Dynamically get citation styles from config.
+        $styles = \Drupal::config('citation_select.settings')->get('styles') ?: [];
 
         // loop over every style
         foreach ($styles as $key => $value) {
