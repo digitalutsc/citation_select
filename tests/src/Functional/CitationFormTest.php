@@ -10,7 +10,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @group citation_select
  */
-class CitationFormTests extends BrowserTestBase {
+class CitationFormTest extends BrowserTestBase {
 
   /**
    * {@inheritdoc}
