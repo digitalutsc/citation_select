@@ -10,7 +10,7 @@
     }
   },
   "require": {
-    "professional-wiki/edtf": "~2.0",
+    "professional-wiki/edtf": "^3.1",
     "drupal/token": "^1.9",
     "seboettg/citeproc-php": "^2.6",
     "adci/full-name-parser": "^0.2.4"
