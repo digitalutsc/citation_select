@@ -19,7 +19,7 @@ class SelectCitationForm extends FormBase {
   /**
    * Citation styler service.
    *
-   * @var \Drupal\citation_select\CitationStyler
+   * @var \Drupal\citation_select\CitationStylerInterface
    */
   protected $styler;
 
@@ -33,7 +33,7 @@ class SelectCitationForm extends FormBase {
   /**
    * Citation processor service.
    *
-   * @var Drupal\citation_select\CitationProcessorService
+   * @var \Drupal\citation_select\CitationProcessorService
    */
   protected $citationProcessor;
 
@@ -99,6 +99,10 @@ class SelectCitationForm extends FormBase {
         'class' => ['left-col'],
       ],
     ];
+
+    // Get the user selected citation style, or the default one from config.
+    $citation_style = $form_state->getValue('citation_style') ?? $this->config('citation_select.settings')->get('default_style');
+
     $form['container-citation']['citation-info']['citation_style'] = [
       '#type' => 'select',
       '#options' => $csl_options,
@@ -112,18 +116,32 @@ class SelectCitationForm extends FormBase {
       ],
       '#attributes' => ['aria-label' => $this->t('Select style of citation')],
       '#theme_wrappers' => [],
+      '#default_value' => $citation_style,
     ];
+
+    $nid = $this->getNodeId();
     $form['container-citation']['citation-info']['nid'] = [
       '#type' => 'hidden',
-      '#value' => $this->getNodeId(),
+      '#value' => $nid,
       '#theme_wrappers' => [],
     ];
-    $bibliography = $config->get('show_on_load') ? $this->renderer->render($this->getBibliography($form, $form_state)) : '';
+    
     $form['container-citation']['citation-info']['formatted-bibliography'] = [
       '#type' => 'item',
-      '#markup' => "<div id='formatted-bibliography'>$bibliography</div>",
+      '#prefix' => '<div id="formatted-bibliography">',
+      '#suffix' => '</div>',
       '#theme_wrappers' => [],
     ];
+
+    if (!empty($citation_style)) {
+      $citation_styler->setStyleById($citation_style);
+      $langcode = $citation_styler->getLanguageCode();
+      $data = $this->citationProcessor->getCitationArray($nid, $langcode);
+      $this->sanitizeArray($data);
+      $citation = $citation_styler->render($data);
+
+      $form['container-citation']['citation-info']['formatted-bibliography']['#children'] = $citation . "<br>Review all citations for accuracy.";
+    }
 
     $form['container-citation']['actions'] = [
       '#type' => 'actions',
@@ -160,25 +178,7 @@ class SelectCitationForm extends FormBase {
    *   Render array.
    */
   public function getBibliography(array $form, FormStateInterface $form_state) {
-    // Default values for initial page load.
-    $citation_style = $form_state->getValue('citation_style');
-    $nid = $form_state->getValue('nid');
-    if ($citation_style == '') {
-      $citation_style = $this->config('citation_select.settings')->get('default_style');
-      $nid = $this->getNodeId();
-    }
-    $citation_styler = $this->styler;
-    $citation_styler->setStyleById($citation_style);
-    $langcode = $citation_styler->getLanguageCode();
-    $data = $this->citationProcessor->getCitationArray($nid, $langcode);
-    $this->sanitizeArray($data);
-    $citation = $citation_styler->render($data);
-
-    $response = [
-      '#children' => $citation . "<br>Review all citations for accuracy.",
-    ];
-
-    return $response;
+    return $form['container-citation']['citation-info']['formatted-bibliography'];
   }
 
   /**

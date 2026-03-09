@@ -15,7 +15,7 @@ class CitationFormTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [];
+  protected static $modules = ['citation_select'];
 
   /**
    * {@inheritdoc}

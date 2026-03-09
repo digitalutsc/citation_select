@@ -12,28 +12,28 @@ class CitationProcessorService implements CitationProcessorServiceInterface {
   /**
    * Plugin manager.
    *
-   * @var Drupal\citation_select\CitationFieldFormatterInterface
+   * @var \Drupal\citation_select\CitationFieldFormatterInterface
    */
   protected $citationFieldFormatterManager;
 
   /**
    * Config factory service.
    *
-   * @var Drupal\Core\Config\ConfigFactoryInterface
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
 
   /**
    * Date formatter service.
    *
-   * @var Drupal\Core\Datetime\DateFormatterInterface
+   * @var \Drupal\Core\Datetime\DateFormatterInterface
    */
   protected $dateFormatter;
 
   /**
    * Entity type manager service.
    *
-   * @var Drupal\Core\Entity\EntityTypeManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
 
