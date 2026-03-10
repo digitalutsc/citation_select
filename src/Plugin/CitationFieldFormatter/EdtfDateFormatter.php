@@ -22,18 +22,24 @@ class EdtfDateFormatter extends CitationFieldFormatterBase {
     $parser = EdtfFactory::newParser();
     $parsing_result = $parser->parse($string);
 
-    // Check if parsing was successful before calling getEdtfValue().
-    if (!$parsing_result->isValid()) {
-      \Drupal::logger('citation_select')->warning('Failed to parse EDTF date: @date. Error: @error', [
-        '@date' => $string,
-        '@error' => $parsing_result->getErrorMessage(),
-      ]);
+    try {
+      // Check if parsing was successful before calling getEdtfValue().
+      if (!$parsing_result->isValid()) {
+        \Drupal::logger('citation_select')->warning('Failed to parse EDTF date: @date. Error: @error', [
+          '@date' => $string,
+          '@error' => $parsing_result->getErrorMessage(),
+        ]);
+        throw new \InvalidArgumentException($parsing_result->getErrorMessage());
+      }
+
+      $edtf_value = $parsing_result->getEdtfValue();
+    }
+    catch (\Exception $e) {
+      \Drupal::messenger()->addWarning(t('The date "@date" is not a valid EDTF format. Please enter a valid date.', ['@date' => $string]));
       return [
         'date-parts' => [],
       ];
     }
-
-    $edtf_value = $parsing_result->getEdtfValue();
     try {
       // The parser may return either an EDTF Set or an ExtDate object.
       if (method_exists($edtf_value, 'getStartDate') && method_exists($edtf_value, 'getEndDate')) {
