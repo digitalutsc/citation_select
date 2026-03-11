@@ -7,7 +7,7 @@ use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
 
 /**
- * Test for main module functionality.
+ * Test for config form functionality.
  *
  * @group citation_select
  */
