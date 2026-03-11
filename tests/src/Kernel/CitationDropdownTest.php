@@ -6,7 +6,7 @@ use Drupal\KernelTests\KernelTestBase;
 /**
  * Tests translatability of dropdown option in the Select Citation Form.
  */
-class CitationDropdownTests extends KernelTestBase {
+class CitationDropdownTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
@@ -19,9 +19,7 @@ class CitationDropdownTests extends KernelTestBase {
     parent::setUp();
     $this->installConfig(['citation_select']);
 
-    // clear default_style so the form does not attempt to render a citation
-    // (need a real node and is failing in this kernel test)
-    // next steps: migrate to a Functional test and implement more robust testing
+    // clear default_style and show_on_load so the form does not attempt to render a citation
     \Drupal::configFactory()
       ->getEditable('citation_select.settings')
       ->set('default_style', '')
@@ -52,13 +50,5 @@ class CitationDropdownTests extends KernelTestBase {
     }
 
     $this->assertEquals($expected_count, $actual_count);
-
-    // alternate approach to do same thing as above (requires multiple assertions in best case)
-    foreach ($options as $key => $label) {
-      $this->assertTrue(
-        $label instanceof \Drupal\Core\StringTranslation\TranslatableMarkup, 
-        "'$label' is NOT translatable."
-      );
-    }
   }
 }

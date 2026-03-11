@@ -7,11 +7,11 @@ use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
 
 /**
- * Test for main module functions.
+ * Test for main module functionality.
  *
  * @group citation_select
  */
-class CitationConfigTests extends BrowserTestBase {
+class CitationConfigTest extends BrowserTestBase {
 
     /**
      * {@inheritdoc}
@@ -34,6 +34,7 @@ class CitationConfigTests extends BrowserTestBase {
     public function setUp(): void {
         parent::setUp();
 
+        // create a demo node type and user
         NodeType::create([
             'type' => 'islandora_object',
             'name' => 'Repository Item',
@@ -47,6 +48,7 @@ class CitationConfigTests extends BrowserTestBase {
     }
 
     public function testAllCitationStylesOnPageLoad(){
+        // log in, place a citation block and make a node for testing
         $this->drupalLogin($this->user);
 
         $this->drupalPlaceBlock('citation_select_block');
