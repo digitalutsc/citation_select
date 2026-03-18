@@ -79,7 +79,8 @@ class SelectCitationForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     /** @var \Drupal\citation_select\CitationStylerInterface $styler */
     $config = $this->config('citation_select.settings');
-    $default_style = $config->get('show_on_load') ? $config->get('default_style') : "";
+    $show_on_load = $config->get('show_on_load');
+    $default_style = $config->get('default_style');
     $citation_styler = $this->styler;
     $citation_styles = $citation_styler->getEnabledStyles();
     $csl_options = array_map(function ($cs) {
@@ -100,13 +101,18 @@ class SelectCitationForm extends FormBase {
       ],
     ];
 
-    // Get the user selected citation style, or the default one from config.
-    $citation_style = $form_state->getValue('citation_style') ?? $this->config('citation_select.settings')->get('default_style');
+    // Determine which citation style should be selected by default.
+    $user_selected_style = $form_state->getValue('citation_style');
+    if ($show_on_load) {
+      $citation_style = $user_selected_style ?? $default_style;
+    }
+    else {
+      $citation_style = $user_selected_style ?? '';
+    }
 
     $form['container-citation']['citation-info']['citation_style'] = [
       '#type' => 'select',
       '#options' => $csl_options,
-      '#default_value' => $default_style,
       '#empty_option' => $this->t('- Select citation style -'),
       '#ajax' => [
         'callback' => '::getBibliography',
