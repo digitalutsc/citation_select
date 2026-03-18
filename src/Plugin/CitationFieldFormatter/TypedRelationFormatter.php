@@ -77,7 +77,14 @@ class TypedRelationFormatter extends CitationFieldFormatterBase implements Conta
       $rel_type = $current->get('rel_type')->getString();
       $rel_name = $this->getTypedRelationsMap($node_field)[$rel_type] ?? NULL;
 
-      $entity = $current->get('entity')->getTarget()->getValue();
+      // Check if the entity relationship actually exists before trying to use it.
+      $entity_adapter = $current->get('entity')->getTarget();
+      if (!$entity_adapter || !$entity_adapter->getValue()) {
+        $iterator->next();
+        continue;
+      }
+
+      $entity = $entity_adapter->getValue();
       $value = $entity->getName();
 
       if (!empty($rel_name) && in_array($rel_name, array_keys($csl_fields))) {
