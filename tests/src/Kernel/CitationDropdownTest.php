@@ -5,6 +5,8 @@ use Drupal\KernelTests\KernelTestBase;
 
 /**
  * Tests translatability of dropdown option in the Select Citation Form.
+ * 
+ * @group citation_select
  */
 class CitationDropdownTest extends KernelTestBase {
   /**
