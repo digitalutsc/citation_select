@@ -11,8 +11,8 @@ use Drupal\node\Entity\NodeType;
  *
  * @group citation_select
  */
-class CitationConfigTest extends BrowserTestBase {
-
+class CitationConfigTest extends BrowserTestBase
+{
     /**
      * {@inheritdoc}
      */
@@ -31,7 +31,8 @@ class CitationConfigTest extends BrowserTestBase {
     /**
      * {@inheritdoc}
      */
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         // create a demo node type and user
@@ -47,7 +48,8 @@ class CitationConfigTest extends BrowserTestBase {
         ]);
     }
 
-    public function testAllCitationStylesOnPageLoad(){
+    public function testAllCitationStylesOnPageLoad()
+    {
         // log in, place a citation block and make a node for testing
         $this->drupalLogin($this->user);
 
@@ -67,7 +69,7 @@ class CitationConfigTest extends BrowserTestBase {
             // set default style
             $this->config('citation_select.settings')
                 ->set('default_style', $key)
-                ->set('show_on_load', TRUE)
+                ->set('show_on_load', true)
                 ->save();
 
             // verify with config and load the page
@@ -82,5 +84,3 @@ class CitationConfigTest extends BrowserTestBase {
         }
     }
 }
-
-?>

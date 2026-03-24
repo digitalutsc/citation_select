@@ -15,14 +15,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *    field_type = "typed_relation",
  * )
  */
-class TypedRelationFormatter extends CitationFieldFormatterBase implements ContainerFactoryPluginInterface {
-
+class TypedRelationFormatter extends CitationFieldFormatterBase implements ContainerFactoryPluginInterface
+{
   /**
    * Config factory service.
    *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
-  protected $configFactory;
+    protected $configFactory;
 
   /**
    * Creates configuration factory member.
@@ -36,10 +36,11 @@ class TypedRelationFormatter extends CitationFieldFormatterBase implements Conta
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   Configuration factory.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $configFactory) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->configFactory = $configFactory;
-  }
+    public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $configFactory)
+    {
+        parent::__construct($configuration, $plugin_id, $plugin_definition);
+        $this->configFactory = $configFactory;
+    }
 
   /**
    * Constructor.
@@ -55,63 +56,64 @@ class TypedRelationFormatter extends CitationFieldFormatterBase implements Conta
    *
    * @return static
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('config.factory')
-    );
-  }
+    public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition)
+    {
+        return new static(
+            $configuration,
+            $plugin_id,
+            $plugin_definition,
+            $container->get('config.factory')
+        );
+    }
 
   /**
    * {@inheritdoc}
    */
-  public function formatMultiple($node, $node_field, $csl_fields) {
-    $iterator = $node->get($node_field)->getIterator();
+    public function formatMultiple($node, $node_field, $csl_fields)
+    {
+        $iterator = $node->get($node_field)->getIterator();
 
-    $data = [];
-    while ($iterator->valid()) {
-      $current = $iterator->current();
+        $data = [];
+        while ($iterator->valid()) {
+            $current = $iterator->current();
 
-      $rel_type = $current->get('rel_type')->getString();
-      $rel_name = $this->getTypedRelationsMap($node_field)[$rel_type] ?? NULL;
+            $rel_type = $current->get('rel_type')->getString();
+            $rel_name = $this->getTypedRelationsMap($node_field)[$rel_type] ?? null;
 
-      // Check if the entity relationship actually exists before trying to use it.
-      $entity_adapter = $current->get('entity')->getTarget();
-      if (!$entity_adapter || !$entity_adapter->getValue()) {
-        $iterator->next();
-        continue;
-      }
-
-      $entity = $entity_adapter->getValue();
-      $value = $entity->getName();
-
-      if (!empty($rel_name) && in_array($rel_name, array_keys($csl_fields))) {
-        switch ($csl_fields[$rel_name]) {
-          case 'person':
-            // islandora-specifific linked agents.
-            if ($node_field == 'field_linked_agent') {
-              $name_type = $entity->bundle();
-              $data[$rel_name][] = ($name_type == 'person') ? $this->convertName($value) : $value;
+          // Check if the entity relationship actually exists before trying to use it.
+            $entity_adapter = $current->get('entity')->getTarget();
+            if (!$entity_adapter || !$entity_adapter->getValue()) {
+                $iterator->next();
+                continue;
             }
-            else {
-              $data[$rel_name][] = $this->convertName($value);
-            }
-            break;
 
-          default:
-            if ($rel_name == "publisher" && isset($data[$rel_name])) {
-              break;
+            $entity = $entity_adapter->getValue();
+            $value = $entity->getName();
+
+            if (!empty($rel_name) && in_array($rel_name, array_keys($csl_fields))) {
+                switch ($csl_fields[$rel_name]) {
+                    case 'person':
+                      // islandora-specifific linked agents.
+                        if ($node_field == 'field_linked_agent') {
+                            $name_type = $entity->bundle();
+                            $data[$rel_name][] = ($name_type == 'person') ? $this->convertName($value) : $value;
+                        } else {
+                            $data[$rel_name][] = $this->convertName($value);
+                        }
+                        break;
+
+                    default:
+                        if ($rel_name == "publisher" && isset($data[$rel_name])) {
+                            break;
+                        }
+                        $data[$rel_name] = $value;
+                        break;
+                }
             }
-            $data[$rel_name] = $value;
-            break;
+            $iterator->next();
         }
-      }
-      $iterator->next();
+        return $data;
     }
-    return $data;
-  }
 
   /**
    * Gets map of typed relation.
@@ -122,9 +124,9 @@ class TypedRelationFormatter extends CitationFieldFormatterBase implements Conta
    * @return array
    *   Mapping of typed relation name to corresponding CSL-JSON field.
    */
-  protected function getTypedRelationsMap($node_field) {
-    $config = $this->configFactory->get('citation_select.settings');
-    return $config->get('typed_relation_map');
-  }
-
+    protected function getTypedRelationsMap($node_field)
+    {
+        $config = $this->configFactory->get('citation_select.settings');
+        return $config->get('typed_relation_map');
+    }
 }
