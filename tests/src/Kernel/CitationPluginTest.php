@@ -54,7 +54,7 @@ class CitationPluginTest extends PluginTestBase {
    *
    * @var \Drupal\citation_select\CitationProcessorService
    */
-  protected $citation_processor;
+  protected $citationProcessor;
 
   /**
    * {@inheritdoc}
@@ -124,7 +124,7 @@ class CitationPluginTest extends PluginTestBase {
     ]);
     $field->save();
 
-    $this->citation_processor = $this->container->get('citation_select.citation_processor');
+    $this->citationProcessor = $this->container->get('citation_select.citation_processor');
 
     $human_parser_mock = $this->createMock(HumanNameParser::class);
     $human_parser_mock->expects($this->any())

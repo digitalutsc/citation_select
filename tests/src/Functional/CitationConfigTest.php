@@ -23,6 +23,8 @@ class CitationConfigTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
+   * {@inheritdoc}
+   *
    * @var \Drupal\user\UserInterface
    */
   protected $user;
@@ -47,7 +49,7 @@ class CitationConfigTest extends BrowserTestBase {
   }
 
   /**
-   *
+   * Verifies whether selection in config matches default style on page load.
    */
   public function testAllCitationStylesOnPageLoad() {
     // Log in, place a citation block and make a node for testing.
@@ -76,7 +78,7 @@ class CitationConfigTest extends BrowserTestBase {
       $this->assertEquals($key, $this->config('citation_select.settings')->get('default_style'));
       $this->drupalGet($node->toUrl()->toString());
 
-      // Check that the default citation style from config is selected in the form on the node.
+      // Check that the default style from config is selected in the node.
       $this->assertSession()
         ->fieldValueEquals('edit-citation-style', $key);
       $this->assertSession()

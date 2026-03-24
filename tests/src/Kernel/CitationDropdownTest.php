@@ -23,7 +23,8 @@ class CitationDropdownTest extends KernelTestBase {
     parent::setUp();
     $this->installConfig(['citation_select']);
 
-    // Clear default_style and show_on_load so the form does not attempt to render a citation.
+    // Clear default_style and show_on_load,
+    // so the form does not attempt to render a citation.
     \Drupal::configFactory()
       ->getEditable('citation_select.settings')
       ->set('default_style', '')
