@@ -343,6 +343,7 @@ class CslMapForm extends ConfigFormBase {
     $list = array_map('trim', $list);
     $list = array_filter($list, 'strlen');
 
+    // phpcs:ignore -- Unused variable $position.
     foreach ($list as $position => $text) {
       // Check for an explicit key.
       $matches = [];

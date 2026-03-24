@@ -82,6 +82,7 @@ class SelectCitationForm extends FormBase {
     $citation_styler = $this->styler;
     $citation_styles = $citation_styler->getEnabledStyles();
     $csl_options = array_map(function ($cs) {
+        // phpcs:ignore -- Only string literals should be passed to t().
         return $this->t($cs->label());
     }, $citation_styles);
 
