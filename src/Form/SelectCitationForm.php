@@ -14,8 +14,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Provides a Citation Select form.
  */
 class SelectCitationForm extends FormBase {
-
-
   /**
    * Citation styler service.
    *
@@ -59,11 +57,11 @@ class SelectCitationForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('citation_select.citation_styler'),
-      $container->get('token'),
-      $container->get('citation_select.citation_processor'),
-      $container->get('renderer')
-    );
+          $container->get('citation_select.citation_styler'),
+          $container->get('token'),
+          $container->get('citation_select.citation_processor'),
+          $container->get('renderer')
+      );
   }
 
   /**
@@ -79,11 +77,13 @@ class SelectCitationForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     /** @var \Drupal\citation_select\CitationStylerInterface $styler */
     $config = $this->config('citation_select.settings');
-    $default_style = $config->get('show_on_load') ? $config->get('default_style') : "";
+    $show_on_load = $config->get('show_on_load');
+    $default_style = $config->get('default_style');
     $citation_styler = $this->styler;
     $citation_styles = $citation_styler->getEnabledStyles();
     $csl_options = array_map(function ($cs) {
-      return $this->t($cs->label());
+        // phpcs:ignore -- Only string literals should be passed to t().
+        return $this->t($cs->label());
     }, $citation_styles);
 
     $form['#attached']['library'][] = 'citation_select/citation_select_form';
@@ -100,13 +100,18 @@ class SelectCitationForm extends FormBase {
       ],
     ];
 
-    // Get the user selected citation style, or the default one from config.
-    $citation_style = $form_state->getValue('citation_style') ?? $this->config('citation_select.settings')->get('default_style');
+    // Determine which citation style should be selected by default.
+    $user_selected_style = $form_state->getValue('citation_style');
+    if ($show_on_load) {
+      $citation_style = $user_selected_style ?? $default_style;
+    }
+    else {
+      $citation_style = $user_selected_style ?? '';
+    }
 
     $form['container-citation']['citation-info']['citation_style'] = [
       '#type' => 'select',
       '#options' => $csl_options,
-      '#default_value' => $default_style,
       '#empty_option' => $this->t('- Select citation style -'),
       '#ajax' => [
         'callback' => '::getBibliography',
@@ -125,7 +130,7 @@ class SelectCitationForm extends FormBase {
       '#value' => $nid,
       '#theme_wrappers' => [],
     ];
-    
+
     $form['container-citation']['citation-info']['formatted-bibliography'] = [
       '#type' => 'item',
       '#prefix' => '<div id="formatted-bibliography">',
@@ -204,7 +209,6 @@ class SelectCitationForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-
   }
 
   /**

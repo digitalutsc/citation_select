@@ -13,7 +13,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Configure Citation Select settings for this site.
  */
 class CslMapForm extends ConfigFormBase {
-
   /**
    * Entity field manager service.
    *
@@ -125,9 +124,9 @@ class CslMapForm extends ConfigFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity_field.manager'),
-      $container->get('plugin.manager.field.field_type'),
-    );
+          $container->get('entity_field.manager'),
+          $container->get('plugin.manager.field.field_type'),
+      );
   }
 
   /**
@@ -276,9 +275,11 @@ class CslMapForm extends ConfigFormBase {
       // - locked field storages,
       // - field storages that should not be added via user interface,.
       $field_type = $field_storage->getType();
-      if ($field_storage instanceof FieldStorageConfigInterface
-        && !$field_storage->isLocked()
-        && empty($field_types[$field_type]['no_ui'])) {
+      if (
+            $field_storage instanceof FieldStorageConfigInterface
+            && !$field_storage->isLocked()
+            && empty($field_types[$field_type]['no_ui'])
+        ) {
         $options[$field_name] = $this->t('@type: @field', [
           '@type' => $field_types[$field_type]['label'],
           '@field' => $field_name,
@@ -342,6 +343,7 @@ class CslMapForm extends ConfigFormBase {
     $list = array_map('trim', $list);
     $list = array_filter($list, 'strlen');
 
+    // phpcs:ignore -- Unused variable $position.
     foreach ($list as $position => $text) {
       // Check for an explicit key.
       $matches = [];

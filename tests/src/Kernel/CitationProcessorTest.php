@@ -18,7 +18,6 @@ use Drupal\taxonomy\Entity\Vocabulary;
  * @group citation_select
  */
 class CitationProcessorTest extends KernelTestBase {
-
   /**
    * {@inheritdoc}
    */
@@ -126,18 +125,18 @@ class CitationProcessorTest extends KernelTestBase {
     $human_parser_mock->expects($this->any())
       ->method('parse')
       ->will($this->returnCallback(
-        function ($x) {
-          if ($x == 'John') {
-            return ['first_name' => 'John'];
+          function ($x) {
+            if ($x == 'John') {
+                return ['first_name' => 'John'];
+            }
+            if ($x == 'John Smith') {
+                return ['first_name' => 'John', 'last_name' => 'Smith'];
+            }
+            if ($x == 'Jane Smith') {
+                return ['first_name' => 'Jane', 'last_name' => 'Smith'];
+            }
           }
-          if ($x == 'John Smith') {
-            return ['first_name' => 'John', 'last_name' => 'Smith'];
-          }
-          if ($x == 'Jane Smith') {
-            return ['first_name' => 'Jane', 'last_name' => 'Smith'];
-          }
-        }
-      ));
+          ));
 
     $this->container->set('citation_select.human_name_parser', $human_parser_mock);
   }
@@ -162,12 +161,13 @@ class CitationProcessorTest extends KernelTestBase {
 
     $this->configFactory->getEditable('citation_select.settings')
       ->set(
-      'csl_map',
-      [
-        'text_field' => [
-          'type',
-        ],
-      ])
+          'csl_map',
+          [
+            'text_field' => [
+              'type',
+            ],
+          ]
+      )
       ->save();
 
     // No mapping: valid.
@@ -184,10 +184,11 @@ class CitationProcessorTest extends KernelTestBase {
     // Tests using mapping.
     $this->configFactory->getEditable('citation_select.settings')
       ->set(
-      'reference_type_field_map',
-      [
-        'paged content' => 'book',
-      ])
+          'reference_type_field_map',
+          [
+            'paged content' => 'book',
+          ]
+      )
       ->save();
 
     // Type invalid.
@@ -230,25 +231,26 @@ class CitationProcessorTest extends KernelTestBase {
   public function testFormatting() {
     $this->configFactory->getEditable('citation_select.settings')
       ->set(
-        'csl_map',
-        [
-          'title' => [
-            'title',
-          ],
-          'text_field' => [
-            'author',
-            'publisher',
-          ],
-          'text_date_field' => [
-            'issued',
-          ],
-          'entity_reference_field' => [
-            'genre',
-          ],
-          'fake_field' => [
-            'note',
-          ],
-        ])
+          'csl_map',
+          [
+            'title' => [
+              'title',
+            ],
+            'text_field' => [
+              'author',
+              'publisher',
+            ],
+            'text_date_field' => [
+              'issued',
+            ],
+            'entity_reference_field' => [
+              'genre',
+            ],
+            'fake_field' => [
+              'note',
+            ],
+          ]
+      )
       ->save();
 
     $term = Term::create([
@@ -270,33 +272,33 @@ class CitationProcessorTest extends KernelTestBase {
     $obj->save();
     $citation_array = $this->citationProcessor->getCitationArray(12);
     $this->assertEquals(
-      [
-        'author' => [
           [
-            'given' => 'John',
-            'family' => 'Smith',
-          ],
-          [
-            'given' => 'Jane',
-            'family' => 'Smith',
-          ],
-        ],
-        'title' => 'Title',
-        'type' => 'document',
-        'issued' => [
-          'date-parts' => [
-            [
-              2022,
-              01,
-              01,
+            'author' => [
+              [
+                'given' => 'John',
+                'family' => 'Smith',
+              ],
+              [
+                'given' => 'Jane',
+                'family' => 'Smith',
+              ],
             ],
+            'title' => 'Title',
+            'type' => 'document',
+            'issued' => [
+              'date-parts' => [
+                [
+                  2022,
+                  01,
+                  01,
+                ],
+              ],
+            ],
+            'genre' => 'book',
+            'publisher' => 'John Smith',
           ],
-        ],
-        'genre' => 'book',
-        'publisher' => 'John Smith',
-      ],
-      $citation_array
-    );
+          $citation_array
+      );
   }
 
 }
