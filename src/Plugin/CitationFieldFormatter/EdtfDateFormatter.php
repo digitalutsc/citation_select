@@ -35,6 +35,7 @@ class EdtfDateFormatter extends CitationFieldFormatterBase {
       $edtf_value = $parsing_result->getEdtfValue();
     }
     catch (\Exception $e) {
+      // phpcs:ignore -- Use global t() here to avoid refactoring.
       \Drupal::messenger()->addWarning(t('The date "@date" is not a valid EDTF format. Please enter a valid date.', ['@date' => $string]));
       return [
         'date-parts' => [],
@@ -98,7 +99,7 @@ class EdtfDateFormatter extends CitationFieldFormatterBase {
           array_filter([
             $edtf_value->getYear(),
             $edtf_value->getEndMonth(),
-          ])
+          ]),
         ];
       }
       else {

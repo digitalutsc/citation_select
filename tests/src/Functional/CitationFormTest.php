@@ -11,7 +11,6 @@ use Symfony\Component\Yaml\Yaml;
  * @group citation_select
  */
 class CitationFormTest extends BrowserTestBase {
-
   /**
    * {@inheritdoc}
    */

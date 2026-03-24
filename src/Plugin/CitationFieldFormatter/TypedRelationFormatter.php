@@ -16,7 +16,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class TypedRelationFormatter extends CitationFieldFormatterBase implements ContainerFactoryPluginInterface {
-
   /**
    * Config factory service.
    *
@@ -57,11 +56,11 @@ class TypedRelationFormatter extends CitationFieldFormatterBase implements Conta
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('config.factory')
-    );
+          $configuration,
+          $plugin_id,
+          $plugin_definition,
+          $container->get('config.factory')
+      );
   }
 
   /**
@@ -77,7 +76,7 @@ class TypedRelationFormatter extends CitationFieldFormatterBase implements Conta
       $rel_type = $current->get('rel_type')->getString();
       $rel_name = $this->getTypedRelationsMap($node_field)[$rel_type] ?? NULL;
 
-      // Check if the entity relationship actually exists before trying to use it.
+      // Check if the entity relationship exists before trying to use it.
       $entity_adapter = $current->get('entity')->getTarget();
       if (!$entity_adapter || !$entity_adapter->getValue()) {
         $iterator->next();

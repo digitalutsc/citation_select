@@ -20,7 +20,6 @@ use Drupal\taxonomy\Entity\Vocabulary;
  * @group citation_select
  */
 class CitationPluginTest extends PluginTestBase {
-
   /**
    * Module list.
    *
@@ -52,10 +51,10 @@ class CitationPluginTest extends PluginTestBase {
 
   /**
    * The citation processor.
-   * 
+   *
    * @var \Drupal\citation_select\CitationProcessorService
    */
-  protected $citation_processor;
+  protected $citationProcessor;
 
   /**
    * {@inheritdoc}
@@ -125,24 +124,24 @@ class CitationPluginTest extends PluginTestBase {
     ]);
     $field->save();
 
-    $this->citation_processor = $this->container->get('citation_select.citation_processor');
+    $this->citationProcessor = $this->container->get('citation_select.citation_processor');
 
     $human_parser_mock = $this->createMock(HumanNameParser::class);
     $human_parser_mock->expects($this->any())
       ->method('parse')
       ->will($this->returnCallback(
-        function ($x) {
-          if ($x == 'John') {
-            return ['first_name' => 'John'];
+          function ($x) {
+            if ($x == 'John') {
+                return ['first_name' => 'John'];
+            }
+            if ($x == 'John Smith') {
+                return ['first_name' => 'John', 'last_name' => 'Smith'];
+            }
+            if ($x == 'Jane Smith') {
+                return ['first_name' => 'Jane', 'last_name' => 'Smith'];
+            }
           }
-          if ($x == 'John Smith') {
-            return ['first_name' => 'John', 'last_name' => 'Smith'];
-          }
-          if ($x == 'Jane Smith') {
-            return ['first_name' => 'Jane', 'last_name' => 'Smith'];
-          }
-        }
-      ));
+          ));
 
     $this->container->set('citation_select.human_name_parser', $human_parser_mock);
 
@@ -181,19 +180,19 @@ class CitationPluginTest extends PluginTestBase {
     $result = $this->entityReferenceFormatter->formatMultiple($node, 'entity_reference_field', ['genre' => 'person']);
 
     $this->assertEquals(
-      [
-        'genre' => [
           [
-            'given' => 'John',
-            'family' => 'Smith',
+            'genre' => [
+              [
+                'given' => 'John',
+                'family' => 'Smith',
+              ],
+              [
+                'literal' => 'John',
+              ],
+            ],
           ],
-          [
-            'literal' => 'John',
-          ],
-        ],
-      ],
-      $result
-    );
+          $result
+      );
   }
 
   /**
@@ -216,19 +215,21 @@ class CitationPluginTest extends PluginTestBase {
     $this->assertEquals(['genre' => 'Text'], $result);
 
     // More fields, standard.
-    $result = $this->defaultFormatter->formatMultiple($node, 'text_field',
-      [
-        'genre' => 'standard',
-        'publisher' => 'standard',
-      ]
-    );
+    $result = $this->defaultFormatter->formatMultiple(
+          $node,
+          'text_field',
+          [
+            'genre' => 'standard',
+            'publisher' => 'standard',
+          ]
+      );
     $this->assertEquals(
-      [
-        'genre' => 'Text',
-        'publisher' => 'Text',
-      ],
-      $result
-    );
+          [
+            'genre' => 'Text',
+            'publisher' => 'Text',
+          ],
+          $result
+      );
 
     $node = Node::create([
       'type' => 'repository_object',
@@ -240,19 +241,19 @@ class CitationPluginTest extends PluginTestBase {
     // Date.
     $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'date']);
     $this->assertEquals(
-      [
-        'genre' => [
-          'date-parts' => [
           [
-            2022,
-            01,
-            31,
+            'genre' => [
+              'date-parts' => [
+                [
+                  2022,
+                  01,
+                  31,
+                ],
+              ],
+            ],
           ],
-          ],
-        ],
-      ],
-      $result
-    );
+          $result
+      );
 
     $node = Node::create([
       'type' => 'repository_object',
@@ -264,34 +265,36 @@ class CitationPluginTest extends PluginTestBase {
     // Name.
     $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'person']);
     $this->assertEquals(
-      [
-        'genre' => [
           [
-            'literal' => 'John',
+            'genre' => [
+              [
+                'literal' => 'John',
+              ],
+            ],
           ],
-        ],
-      ],
-      $result
-    );
+          $result
+      );
 
     // Name + other kind of field.
-    $result = $this->defaultFormatter->formatMultiple($node, 'text_field',
-      [
-        'genre' => 'person',
-        'publisher' => 'standard',
-      ]
-    );
-    $this->assertEquals(
-      [
-        'genre' => [
+    $result = $this->defaultFormatter->formatMultiple(
+          $node,
+          'text_field',
           [
-            'literal' => 'John',
+            'genre' => 'person',
+            'publisher' => 'standard',
+          ]
+      );
+    $this->assertEquals(
+          [
+            'genre' => [
+              [
+                'literal' => 'John',
+              ],
+            ],
+            'publisher' => 'John',
           ],
-        ],
-        'publisher' => 'John',
-      ],
-      $result
-    );
+          $result
+      );
 
     $node = Node::create([
       'type' => 'repository_object',
@@ -302,19 +305,19 @@ class CitationPluginTest extends PluginTestBase {
     // Names.
     $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'person']);
     $this->assertEquals(
-      [
-        'genre' => [
           [
-            'literal' => 'John',
+            'genre' => [
+              [
+                'literal' => 'John',
+              ],
+              [
+                'given' => 'John',
+                'family' => 'Smith',
+              ],
+            ],
           ],
-          [
-            'given' => 'John',
-            'family' => 'Smith',
-          ],
-        ],
-      ],
-      $result
-    );
+          $result
+      );
 
     // Multiple standard.
     $result = $this->defaultFormatter->formatMultiple($node, 'text_field', ['genre' => 'standard']);

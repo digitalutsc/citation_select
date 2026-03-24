@@ -14,8 +14,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Provides a Citation Select form.
  */
 class SelectCitationForm extends FormBase {
-
-
   /**
    * Citation styler service.
    *
@@ -59,11 +57,11 @@ class SelectCitationForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('citation_select.citation_styler'),
-      $container->get('token'),
-      $container->get('citation_select.citation_processor'),
-      $container->get('renderer')
-    );
+          $container->get('citation_select.citation_styler'),
+          $container->get('token'),
+          $container->get('citation_select.citation_processor'),
+          $container->get('renderer')
+      );
   }
 
   /**
@@ -84,7 +82,8 @@ class SelectCitationForm extends FormBase {
     $citation_styler = $this->styler;
     $citation_styles = $citation_styler->getEnabledStyles();
     $csl_options = array_map(function ($cs) {
-      return $this->t($cs->label());
+        // phpcs:ignore -- Only string literals should be passed to t().
+        return $this->t($cs->label());
     }, $citation_styles);
 
     $form['#attached']['library'][] = 'citation_select/citation_select_form';
@@ -131,7 +130,7 @@ class SelectCitationForm extends FormBase {
       '#value' => $nid,
       '#theme_wrappers' => [],
     ];
-    
+
     $form['container-citation']['citation-info']['formatted-bibliography'] = [
       '#type' => 'item',
       '#prefix' => '<div id="formatted-bibliography">',
@@ -210,7 +209,6 @@ class SelectCitationForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-
   }
 
   /**
