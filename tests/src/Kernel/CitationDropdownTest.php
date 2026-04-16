@@ -48,8 +48,7 @@ class CitationDropdownTest extends KernelTestBase {
     // All options in the dropdowns should be translatable.
     $expected_count = count($options);
     $actual_count = 0;
-    // phpcs:ignore -- Unused variable $key.
-    foreach ($options as $key => $label) {
+    foreach (array_values($options) as $label) {
       if ($label instanceof TranslatableMarkup) {
         $actual_count++;
       }
